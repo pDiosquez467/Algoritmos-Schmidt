@@ -1,0 +1,21 @@
+# Archivos compilados de Java
+*.class
+
+# Archivos generados por paquetes
+*.jar
+*.war
+*.ear
+
+# Carpeta de compilación
+/out/
+build/
+
+# Configuración de IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
