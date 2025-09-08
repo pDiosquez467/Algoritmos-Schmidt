@@ -35,7 +35,7 @@ public class Fraccion {
      * @pre otra != null
      */
     public Fraccion sumar(Fraccion otra) {
-        Validaciones.validarNull(otra, "La fracción a sumar no puede ser nula");
+        Validaciones.validarNotNull(otra, "La fracción a sumar no puede ser nula");
 
         int numeradorSuma   = this.getNumerador() * otra.getDenominador() +
                 this.getDenominador() * otra.getNumerador();
@@ -53,7 +53,7 @@ public class Fraccion {
      * @pre otra != null
      */
     public Fraccion multiplicar(Fraccion otra) {
-        Validaciones.validarNull(otra, "La fracción para multiplicar no puede ser nula");
+        Validaciones.validarNotNull(otra, "La fracción para multiplicar no puede ser nula");
 
         int numeradorProducto   = this.getNumerador() * otra.getNumerador();
         int denominadorProducto = this.getDenominador() * otra.getDenominador();
@@ -70,7 +70,7 @@ public class Fraccion {
      * @pre otra != null
      */
     public Fraccion restar(Fraccion otra) {
-        Validaciones.validarNull(otra, "La fracción a restar no puede ser nula");
+        Validaciones.validarNotNull(otra, "La fracción a restar no puede ser nula");
 
         Fraccion opuesta = new Fraccion((-1) * otra.getNumerador(), otra.getDenominador());
         return this.sumar(opuesta);
@@ -86,7 +86,7 @@ public class Fraccion {
      * @post resultado.getDenominador() > 0
      */
     public Fraccion dividir(Fraccion otra) {
-        Validaciones.validarNull(otra, "La fracción divisor no puede ser nula");
+        Validaciones.validarNotNull(otra, "La fracción divisor no puede ser nula");
 
         Fraccion inversa = new Fraccion(otra.getDenominador(), otra.getNumerador());
         return this.multiplicar(inversa);
@@ -122,7 +122,7 @@ public class Fraccion {
      * @pre otra != null
      */
     public boolean menorQue(Fraccion otra) {
-        Validaciones.validarNull(otra, "La fracción comparada no puede ser nula");
+        Validaciones.validarNotNull(otra, "La fracción comparada no puede ser nula");
         return this.obtenerDecimal() < otra.obtenerDecimal();
     }
 
@@ -134,7 +134,7 @@ public class Fraccion {
      * @pre otra != null
      */
     public boolean mayorQue(Fraccion otra) {
-        Validaciones.validarNull(otra, "La fracción comparada no puede ser nula");
+        Validaciones.validarNotNull(otra, "La fracción comparada no puede ser nula");
         return this.obtenerDecimal() > otra.obtenerDecimal();
     }
 
