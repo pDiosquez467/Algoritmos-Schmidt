@@ -13,7 +13,7 @@ public class Validaciones {
         }
 
         if (numero <= 0) {
-            throw new Exception(mensaje);
+            throw new IllegalArgumentException(mensaje);
         }
     }
 }
