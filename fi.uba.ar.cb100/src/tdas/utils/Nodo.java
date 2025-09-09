@@ -41,4 +41,12 @@ public class Nodo<T> {
     public Nodo<T> getProx() {
         return prox;
     }
+
+    /**
+     * Permite modificar la referencia al próximo nodo enlazado.
+     * @param prox: Referencia al próximo nodo.
+     */
+    public void setProx(Nodo<T> prox) {
+        this.prox = prox;
+    }
 }
