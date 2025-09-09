@@ -57,6 +57,16 @@ public class Proyecto {
                 .findAny().orElse(null);
     }
 
+    @Override
+    public String toString() {
+        return "Proyecto{" +
+                "ID='" + this.id + '\'' +
+                ", Nombre ='" + this.nombre + '\'' +
+                ", Estado =" + this.estadoProyecto +
+                ", Total empleados =" + this.empleados.size() +
+                '}';
+    }
+
     // Getters y Setters
 
     public String getId() {
