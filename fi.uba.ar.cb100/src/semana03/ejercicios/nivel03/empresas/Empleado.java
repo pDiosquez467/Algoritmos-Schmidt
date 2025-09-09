@@ -56,6 +56,14 @@ public class Empleado {
     }
 
     /**
+     * Devuelve el ID del empleado.
+     * @return el ID del empleado.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
      * Devuelve el nombre del empleado.
      * @return el nombre del empleado.
      */
