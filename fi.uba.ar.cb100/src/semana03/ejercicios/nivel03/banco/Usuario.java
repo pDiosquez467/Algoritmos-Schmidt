@@ -53,7 +53,7 @@ public class Usuario {
         cuentaOrigen.transferir(cuentaDestino, monto);
     }
 
-    public CuentaBancaria buscarCuentaBancaria(long numeroCuenta) {
+    public CuentaBancaria buscar(long numeroCuenta) {
         return buscar(c -> c.getNumeroCuenta() == numeroCuenta);
     }
 
