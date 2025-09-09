@@ -7,13 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static semana03.ejercicios.utils.Validaciones.validarNotNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 /**
  * Representa una baraja de cartas simple.
  * Contiene operaciones para barajar, repartir y consultar cartas restantes.
