@@ -68,7 +68,33 @@ public class ListaEnlazada<T> {
      * Complejidad: O(n), siendo n la cantidad de elementos de la lista.
      */
     public void insert(int index, T dato) {
+        if (index > this.len()) {
+            throw new IndexOutOfBoundsException("Fuera de índice");
+        }
 
+        if (index < 0) {
+            index = this.len() + index;
+        }
+
+        Nodo<T> ant = null, act = this.primero;
+        for (int i = 0; i < index; i++) {
+            ant = act;
+            act = act.getProximo();
+        }
+
+        Nodo<T> nuevo = new Nodo<>(dato, act);
+        if (ant == null) {
+            this.primero = nuevo;
+            if (this.ultimo == null) {
+                this.ultimo = nuevo;
+            }
+        } else {
+            ant.setProximo(nuevo);
+            if (act == null) {
+                this.ultimo = nuevo;
+            }
+        }
+        this.cantidad++;
     }
 
     /**
