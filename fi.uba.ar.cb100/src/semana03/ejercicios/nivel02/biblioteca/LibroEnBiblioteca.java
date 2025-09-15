@@ -3,14 +3,14 @@ package semana03.ejercicios.nivel02.biblioteca;
 import semana03.ejercicios.utils.Validaciones;
 
 public class LibroEnBiblioteca {
-    private final int CANTIDAD_MAXIMA = 20;
+    private static final int CANTIDAD_MAXIMA = 20;
 
     private Libro libro;
     private int copiasDisponibles;
 
     public LibroEnBiblioteca(Libro libro, int copiasDisponibles) {
-        this.libro = libro;
-        this.copiasDisponibles = copiasDisponibles;
+        this.setLibro(libro);
+        this.setCopiasDisponibles(copiasDisponibles);
     }
 
     public LibroEnBiblioteca(Libro libro) {
@@ -34,7 +34,7 @@ public class LibroEnBiblioteca {
     // --- Getters y Setters ---
 
     public Libro getLibro() {
-        return new Libro(this.libro.getTitulo(), this.libro.getAutor(), this.libro.getAnioPublicacion());
+        return this.libro;
     }
 
     public int getCopiasDisponibles() {
@@ -47,8 +47,8 @@ public class LibroEnBiblioteca {
     }
 
     private void setCopiasDisponibles(int copiasDisponibles) {
-        Validaciones.validarNumeroEntre(this.copiasDisponibles, 0, this.CANTIDAD_MAXIMA, "El número de copias" +
-                " disponibles de un libro debe ser mayor a cero y menor a " + this.CANTIDAD_MAXIMA);
+        Validaciones.validarNumeroEntre(copiasDisponibles, 0, CANTIDAD_MAXIMA, "El número de copias" +
+                " disponibles de un libro debe ser mayor a cero y menor a " + CANTIDAD_MAXIMA);
         this.copiasDisponibles = copiasDisponibles;
     }
 }
