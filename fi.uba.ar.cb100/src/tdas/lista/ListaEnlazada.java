@@ -4,8 +4,16 @@ import tdas.utils.Nodo;
 
 import java.util.NoSuchElementException;
 
+/**
+ * Representa una lista de elementos genéricos.
+ * @param <T>: El tipo de los elementos de la lista.
+ */
 public class ListaEnlazada<T> {
 
+    /**
+     * Representa un nodo interno de la lista.
+     * @param <T>: El tipo de los elementos del nodo (coincide con el de la lista)
+     */
     private class Nodo<T> {
         private final T dato;
         private Nodo<T> proximo;
@@ -14,24 +22,11 @@ public class ListaEnlazada<T> {
             this.dato = dato;
             this.proximo = proximo;
         }
-
-        public Nodo(T dato) {
-            this(dato, null);
-        }
-
-        public T getDato() {
-            return dato;
-        }
-
-        public Nodo<T> getProximo() {
-            return proximo;
-        }
-
-        public void setProximo(Nodo<T> proximo) {
-            this.proximo = proximo;
-        }
     }
 
+    /**
+     * Atributos de la lista.
+     */
     private Nodo<T> primero;
     private Nodo<T> ultimo;
     private int cantidad;
@@ -53,11 +48,11 @@ public class ListaEnlazada<T> {
      * Complejidad: O(1)
      */
     public void append(T dato) {
-        Nodo<T> nuevo = new Nodo<>(dato);
+        Nodo<T> nuevo = new Nodo<>(dato, null);
         if(this.primero == null) {
             this.primero = nuevo;
         } else {
-            this.ultimo.setProximo(nuevo);
+            this.ultimo.proximo = nuevo;
         }
         this.ultimo = nuevo;
         this.cantidad++;
@@ -65,8 +60,11 @@ public class ListaEnlazada<T> {
 
     /**
      * Inserta en el índice dado, el elemento dado.
-     * @param index: el índice de inserción.
-     * @param dato: el valor a insertar.
+     * @param index el índice de inserción.
+     *  - Si es negativo, se interpreta como desplazamiento desde el final.
+     *  - Ejemplo: -1 inserta antes del último elemento.
+     * @param dato el valor a insertar.
+     * @throws IndexOutOfBoundsException si el índice es mayor que la longitud de la lista.
      * Complejidad: O(n), siendo n la cantidad de elementos de la lista.
      */
     public void insert(int index, T dato) {
@@ -81,7 +79,7 @@ public class ListaEnlazada<T> {
         Nodo<T> ant = null, act = this.primero;
         for (int i = 0; i < index; i++) {
             ant = act;
-            act = act.getProximo();
+            act = act.proximo;
         }
 
         Nodo<T> nuevo = new Nodo<>(dato, act);
@@ -91,7 +89,7 @@ public class ListaEnlazada<T> {
                 this.ultimo = nuevo;
             }
         } else {
-            ant.setProximo(nuevo);
+            ant.proximo = nuevo;
             if (act == null) {
                 this.ultimo = nuevo;
             }
@@ -102,15 +100,21 @@ public class ListaEnlazada<T> {
     /**
      * Elimina y devuelve el elemento en la última posición de la lista.
      * @return el último elemento de la lista (eliminado).
-     * Complejidad: O(1)
+     * Complejidad: O(n), siendo n la cantidad de elementos de la lista.
+     * Nota: Aunque se dispone de un puntero al último nodo, al ser una lista simplemente enlazada
+     * es necesario recorrerla para actualizar el puntero al penúltimo nodo.
      */
     public T pop() {
         return this.pop(this.cantidad-1);
     }
 
     /**
-     * Elimina y devuelve el elemento en la posición dado.
+     * Elimina y devuelve el elemento en la posición dada.
+     * @param index el índice del elemento a eliminar.
+     *  - Si es negativo, se interpreta como desplazamiento desde el final.
+     *  - Ejemplo: -1 elimina el último elemento.
      * @return el elemento eliminado de la lista.
+     * @throws IndexOutOfBoundsException si el índice es mayor que la longitud de la lista.
      * Complejidad: O(n), siendo n la cantidad de elementos de la lista.
      */
     public T pop(int index) {
@@ -125,7 +129,7 @@ public class ListaEnlazada<T> {
         Nodo<T> ant = null, act = this.primero;
         for (int i = 0; i < index; i++) {
             ant = act;
-            act = act.getProximo();
+            act = act.proximo;
         }
         T eliminado = act.dato;
 
@@ -161,16 +165,16 @@ public class ListaEnlazada<T> {
                         this.ultimo = null;
                     }
                 } else {
-                    ant.setProximo(proximo);
+                    ant.proximo = proximo;
                     if (proximo == null) {
                         this.ultimo = ant;
                     }
                 }
                 this.cantidad--;
-                return dato;
+                return removido;
             }
             ant = act;
-            act = act.getProximo();
+            act = act.proximo;
         }
         throw new NoSuchElementException("El valor no pertenece a la lista");
     }
@@ -195,13 +199,16 @@ public class ListaEnlazada<T> {
 
     @Override
     public String toString() {
+        if (this.primero == null) {
+            return "[]";
+        }
         StringBuilder sb = new StringBuilder("[");
         Nodo<T> act = this.primero;
-        while (act.getProximo() != null) {
-            sb.append(act.getDato()).append(", ");
-            act = act.getProximo();
+        while (act.proximo != null) {
+            sb.append(act.dato).append(", ");
+            act = act.proximo;
         }
-        sb.append(act.getDato()).append("]");
+        sb.append(act.dato).append("]");
         return sb.toString();
     }
 }
