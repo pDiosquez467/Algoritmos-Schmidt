@@ -13,7 +13,7 @@ import java.util.List;
 public class Estudiante {
     private String matricula;
     private String nombre;
-    private List<Curso> cursos;
+    private final List<Curso> cursos;
 
     /**
      * Crea un nuevo estudiante con la matrícula y nombre dados.

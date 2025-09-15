@@ -2,6 +2,8 @@ package tdas.lista;
 
 import tdas.utils.Nodo;
 
+import java.util.NoSuchElementException;
+
 public class ListaEnlazada<T> {
 
     private class Nodo<T> {
@@ -52,7 +54,7 @@ public class ListaEnlazada<T> {
      */
     public void append(T dato) {
         Nodo<T> nuevo = new Nodo<>(dato);
-        if(!this.estaVacia()) {
+        if(this.primero == null) {
             this.primero = nuevo;
         } else {
             this.ultimo.setProximo(nuevo);
@@ -112,7 +114,34 @@ public class ListaEnlazada<T> {
      * Complejidad: O(n), siendo n la cantidad de elementos de la lista.
      */
     public T pop(int index) {
-        return null;
+        if (index > this.len()) {
+            throw new IndexOutOfBoundsException("Fuera de índice");
+        }
+
+        if (index < 0) {
+            index = this.len() + index;
+        }
+
+        Nodo<T> ant = null, act = this.primero;
+        for (int i = 0; i < index; i++) {
+            ant = act;
+            act = act.getProximo();
+        }
+        T eliminado = act.dato;
+
+        if (ant == null) {
+            this.primero = act.proximo;
+            if (this.primero == null) {
+                this.ultimo = null;
+            }
+        } else {
+            ant.proximo = act.proximo;
+            if (act.proximo == null) {
+                this.ultimo = ant;
+            }
+        }
+        this.cantidad--;
+        return eliminado;
     }
 
     /**
@@ -121,7 +150,29 @@ public class ListaEnlazada<T> {
      * Complejidad: O(n), siendo n la cantidad de elementos de la lista.
      */
     public T remove(T dato) {
-        return null;
+        Nodo<T> ant = null, act = this.primero;
+        while (act != null) {
+            if (act.dato.equals(dato)) {
+                T removido = act.dato;
+                Nodo<T> proximo = act.proximo;
+                if (ant == null) {
+                    this.primero = proximo;
+                    if (this.primero == null) {
+                        this.ultimo = null;
+                    }
+                } else {
+                    ant.setProximo(proximo);
+                    if (proximo == null) {
+                        this.ultimo = ant;
+                    }
+                }
+                this.cantidad--;
+                return dato;
+            }
+            ant = act;
+            act = act.getProximo();
+        }
+        throw new NoSuchElementException("El valor no pertenece a la lista");
     }
 
     /**
@@ -140,5 +191,17 @@ public class ListaEnlazada<T> {
      */
     public int len() {
         return this.cantidad;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        Nodo<T> act = this.primero;
+        while (act.getProximo() != null) {
+            sb.append(act.getDato()).append(", ");
+            act = act.getProximo();
+        }
+        sb.append(act.getDato()).append("]");
+        return sb.toString();
     }
 }

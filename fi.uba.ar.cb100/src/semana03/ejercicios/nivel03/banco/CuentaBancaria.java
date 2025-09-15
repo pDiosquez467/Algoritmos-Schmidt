@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CuentaBancaria {
-    private long numeroCuenta;
-    private Usuario titular;
+    private final long numeroCuenta;
+    private final Usuario titular;
     private double saldo;
     private final List<Transaccion> transacciones;
 
