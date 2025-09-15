@@ -24,6 +24,10 @@ public class ListaEnlazada<T> {
         public Nodo<T> getProximo() {
             return proximo;
         }
+
+        public void setProximo(Nodo<T> proximo) {
+            this.proximo = proximo;
+        }
     }
 
     private Nodo<T> primero;
@@ -47,7 +51,14 @@ public class ListaEnlazada<T> {
      * Complejidad: O(1)
      */
     public void append(T dato) {
-
+        Nodo<T> nuevo = new Nodo<>(dato);
+        if(!this.estaVacia()) {
+            this.primero = nuevo;
+        } else {
+            this.ultimo.setProximo(nuevo);
+        }
+        this.ultimo = nuevo;
+        this.cantidad++;
     }
 
     /**
