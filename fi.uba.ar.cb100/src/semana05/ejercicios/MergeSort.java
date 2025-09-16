@@ -2,8 +2,6 @@ package semana05.ejercicios;
 
 import java.util.Arrays;
 
-import java.util.Arrays;
-
 /**
  * Clase que proporciona métodos para ordenar arreglos utilizando el algoritmo MergeSort.
  * Este algoritmo sigue un paradigma 'divide y vencerás', con complejidad O(n log n).
