@@ -1,13 +1,12 @@
 package semana03.ejercicios.nivel02.cursos;
 
-import semana03.ejercicios.nivel02.cursos.excepciones.CursoException;
+import semana03.ejercicios.nivel02.cursos.excepciones.MatriculaException;
 import semana03.ejercicios.utils.Validaciones;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Representa a un estudiante identificado por una matrícula única y con una lista
@@ -41,7 +40,7 @@ public class Estudiante {
     }
 
     public boolean alcanzoLimiteDeCursos() {
-        return this.cursos.size() == NUMERO_MAXIMO_CURSOS;
+        return this.cursos.size() >= NUMERO_MAXIMO_CURSOS;
     }
 
     @Override
@@ -57,13 +56,13 @@ public class Estudiante {
 
     // Helpers package-private
 
-    void agregarCursoInternal(Curso curso) throws CursoException {
+    void agregarCursoInternal(Curso curso) {
         if (!this.cursos.contains(curso)) {
             this.cursos.add(curso);
         }
     }
 
-    void eliminarCursoInternal(Curso curso) throws CursoException {
+    void eliminarCursoInternal(Curso curso) {
         this.cursos.remove(curso);
     }
 }
