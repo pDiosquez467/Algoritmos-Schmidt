@@ -3,72 +3,126 @@ package semana03.ejercicios.nivel02.pedidos;
 import semana03.ejercicios.nivel02.pedidos.excepciones.PedidoException;
 import semana03.ejercicios.utils.Validaciones;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 public class Pedido {
-    private String codigo;
-    private final List<Producto> productos;
+    private static final int CAPACIDAD_INICIAL = 10;
+
+    private final String codigo;
+    private Producto[] productos;
+    private int indiceSiguiente;
 
     public Pedido(String codigo) {
+        Validaciones.validarNotNull(codigo, "El código de un producto debe ser no nulo");
+        Validaciones.validarNotBlank(codigo, "El código de un producto debe ser no vacío");
         this.codigo = codigo;
-        this.productos = new ArrayList<>();
+        this.productos = new Producto[CAPACIDAD_INICIAL];
+        this.indiceSiguiente = 0;
     }
 
-    // Métodos de comportamiento
+    // --- Métodos de comportamiento (públicos) ---
 
     public void agregarProducto(Producto producto) throws PedidoException {
-        if (this.esProductoPedido(producto)) {
-            throw new PedidoException("El producto ya forma parte de la lista de productos pedidos");
+        Validaciones.validarNotNull(producto, "El producto de un pedido debe ser no nulo");
+
+        if (this.contieneProducto(producto)) {
+            throw new PedidoException("El  producto ya forma parte de los productos pedidos");
         }
-        this.productos.add(producto);
+
+        if (this.debeAumentarCapacidad()) {
+            this.ajustarCapacidad(this.productos.length * 2);
+        }
+        this.productos[indiceSiguiente++] = new Producto(producto.codigo(), producto.nombre(), producto.precio());
     }
 
     public void eliminarProducto(Producto producto) throws PedidoException {
-        if (!this.esProductoPedido(producto)) {
-            throw new PedidoException("El producto no forma parte de la lista de productos pedidos");
+        Validaciones.validarNotNull(producto, "El producto de un pedido debe ser no nulo");
+
+        if (!this.contieneProducto(producto)) {
+            throw new PedidoException("El producto no forma parte de los productos pedidos");
         }
-        this.productos.remove(producto);
+
+        int indice = this.indiceDelProducto(producto);
+        this.compactarProductosDesde(indice);
+
+        if (this.debeReducirCapacidad()) {
+            this.ajustarCapacidad(this.productos.length / 2);
+        }
     }
 
     public double montoTotalPedido() {
-        return this.productos.stream()
-                .map(Producto::getPrecio)
-                .reduce(0.0, Double::sum);
+        double total = 0.0;
+        for (int i = 0; i < this.indiceSiguiente; i++) {
+            total += this.productos[i].precio();
+        }
+        return total;
     }
 
-    public String resumenPedido() {
-        return "Resumen del pedido:" +
-                "Producto más caro: " + this.productoMasCaro() +
-                "Producto más barato: " + this.productoMasBarato() +
-                "Cantidad de productos:" + this.productos.size() +
-                "Monto total: $" + this.montoTotalPedido();
+    public Producto[] productos() {
+        Producto[] copias = new Producto[this.indiceSiguiente];
+        for (int i = 0; i < this.indiceSiguiente; i++) {
+            Producto almacenado = this.productos[i];
+            copias[i] = new Producto(almacenado.codigo(), almacenado.nombre(), almacenado.precio());
+        }
+        return copias;
     }
 
-    private Producto productoMasCaro() {
-        Optional<Producto> productoMasCaro = this.productos.stream().max(Comparator.comparingDouble(Producto::getPrecio));
-        return productoMasCaro.orElse(null);
+    public Producto productoMasCaro() throws PedidoException {
+        if (!hayProductos()) {
+            throw new PedidoException("No hay productos pedidos");
+        }
+
+        Producto productoMasCaro = this.productos[0];
+        for (int i = 1; i < this.indiceSiguiente; i++) {
+            if (this.productos[i].precio() > productoMasCaro.precio()) {
+                productoMasCaro = this.productos[i];
+            }
+        }
+        return new Producto(productoMasCaro.codigo(), productoMasCaro.nombre(), productoMasCaro.precio());
     }
 
-    private Producto productoMasBarato() {
-        Optional<Producto> productoMasBarato = this.productos.stream().max(Comparator.comparingDouble(Producto::getPrecio));
-        return productoMasBarato.orElse(null);
+    public int cantidadDeProductos() {
+        return this.indiceSiguiente;
     }
 
-    private boolean esProductoPedido(Producto producto) {
-        return this.productos.stream().anyMatch(p -> p.equals(producto));
+    // --- Helpers privados ---
+
+    private boolean contieneProducto(Producto producto) {
+        return this.indiceDelProducto(producto) > -1;
     }
 
-    // Getters y Setters
-
-    public String getCodigo() {
-        return codigo;
+    private boolean hayProductos() {
+        return this.indiceSiguiente > 0;
     }
 
-    public void setCodigo(String codigo) {
-        Validaciones.validarNotBlank(codigo, "El código de un producto no debe ser vacío!");
-        this.codigo = codigo;
+    private boolean debeAumentarCapacidad() {
+        return this.indiceSiguiente == this.productos.length;
+    }
+
+    private boolean debeReducirCapacidad() {
+        return this.productos.length > CAPACIDAD_INICIAL && this.indiceSiguiente < (this.productos.length / 4);
+    }
+
+    private void compactarProductosDesde(int desde) {
+        for (int i = desde; i < this.indiceSiguiente - 1; i++) {
+            this.productos[i] = this.productos[i+1];
+        }
+        this.productos[--indiceSiguiente] = null;
+    }
+
+    private int indiceDelProducto(Producto producto) {
+        for (int i = 0; i < this.indiceSiguiente; i++) {
+            if (this.productos[i].equals(producto)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void ajustarCapacidad(int nuevaCapacidad) {
+        Producto[] nuevos = new Producto[nuevaCapacidad];
+        System.arraycopy(this.productos, 0, nuevos, 0, Math.min(nuevaCapacidad, this.indiceSiguiente));
+        this.productos = nuevos;
     }
 }
