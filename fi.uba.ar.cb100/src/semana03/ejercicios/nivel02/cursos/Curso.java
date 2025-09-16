@@ -1,12 +1,8 @@
 package semana03.ejercicios.nivel02.cursos;
 
-import semana03.ejercicios.nivel02.cursos.excepciones.CursoException;
 import semana03.ejercicios.utils.Validaciones;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class Curso {
@@ -33,11 +29,11 @@ public class Curso {
     }
 
     public boolean estaLleno() {
-        return this.estudiantes.size() == CUPO_MAXIMO;
+        return this.estudiantes.size() >= CUPO_MAXIMO;
     }
 
     public int cuposDisponibles() {
-        return CUPO_MAXIMO - this.estudiantes.size();
+        return Math.max(0, CUPO_MAXIMO - this.estudiantes.size());
     }
 
     public List<Estudiante> estudiantes() {
@@ -57,13 +53,13 @@ public class Curso {
 
     // --- Helpers package-private
 
-    void agregarEstudiante(Estudiante estudiante) {
-        if (!this.estaInscripto(estudiante)) {
+    void agregarEstudianteInternal(Estudiante estudiante) {
+        if (!this.estudiantes.contains(estudiante)) {
             this.estudiantes.add(estudiante);
         }
     }
 
-    void eliminarEstudiante(Estudiante estudiante) {
+    void eliminarEstudianteInternal(Estudiante estudiante) {
         this.estudiantes.remove(estudiante);
     }
 }
