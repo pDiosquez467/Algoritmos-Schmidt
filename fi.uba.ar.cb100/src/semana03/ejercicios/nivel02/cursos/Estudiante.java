@@ -1,10 +1,10 @@
 package semana03.ejercicios.nivel02.cursos;
 
 import semana03.ejercicios.nivel02.cursos.excepciones.CursoException;
-import semana03.ejercicios.nivel02.cursos.excepciones.EstudianteException;
 import semana03.ejercicios.utils.Validaciones;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,39 +29,19 @@ public class Estudiante {
 
         this.legajo = legajo;
         this.nombre = nombre;
-        this.cursos = new ArrayList<>(NUMERO_MAXIMO_CURSOS);
+        this.cursos = new ArrayList<>();
     }
 
-    public void inscribirse(Curso curso) throws CursoException {
-        Validaciones.validarNotNull(curso, "El curso no puede ser null");
-
-        if (this.estaInscripto(curso)) {
-            throw new CursoException("El estudiante ya está inscripto a este curso!");
-        }
-
-        if (cursos.size() >= NUMERO_MAXIMO_CURSOS) {
-            throw new CursoException("Límite de cursos alcanzado");
-        }
-
-        cursos.add(curso.copy());
+    public List<Curso> cursos() {
+        return Collections.unmodifiableList(this.cursos);
     }
 
-    public void eliminar(Curso curso) throws CursoException {
-        Validaciones.validarNotNull(curso, "El curso no puede ser null");
-
-        if (!cursos.removeIf(c -> c.equals(curso))) {
-            throw new CursoException("El estudiante no está inscripto en este curso!");
-        }
-    }
-
-    public List<Curso> cursosActivos() {
-        return cursos.stream()
-                .map(Curso::copy)
-                .collect(Collectors.toList());
-    }
-
-    private boolean estaInscripto(Curso curso) {
+    public boolean estaInscripto(Curso curso) {
         return cursos.stream().anyMatch(c -> c.equals(curso));
+    }
+
+    public boolean alcanzoLimiteDeCursos() {
+        return this.cursos.size() == NUMERO_MAXIMO_CURSOS;
     }
 
     @Override
@@ -73,5 +53,17 @@ public class Estudiante {
     @Override
     public int hashCode() {
         return Objects.hashCode(legajo);
+    }
+
+    // Helpers package-private
+
+    void agregarCursoInternal(Curso curso) throws CursoException {
+        if (!this.cursos.contains(curso)) {
+            this.cursos.add(curso);
+        }
+    }
+
+    void eliminarCursoInternal(Curso curso) throws CursoException {
+        this.cursos.remove(curso);
     }
 }
