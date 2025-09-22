@@ -1,6 +1,4 @@
-package semana03.ejercicios.utils;
-
-import semana03.ejercicios.nivel03.cartas.Carta;
+package validaciones;
 
 import java.util.List;
 
@@ -39,7 +37,7 @@ public class Validaciones {
         }
     }
 
-    public static void validarNumeroEntre(Integer value, Integer desde, Integer hasta, String mensaje) {
+    public static void validarNumeroEntre(Double value, Double desde, Double hasta, String mensaje) {
         if (value < desde || value > hasta) {
             throw new IllegalArgumentException(mensaje);
         }
