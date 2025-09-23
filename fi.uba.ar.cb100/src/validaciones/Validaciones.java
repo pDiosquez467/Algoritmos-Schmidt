@@ -19,6 +19,18 @@ public class Validaciones {
         }
     }
 
+    public static <T extends Number & Comparable<T>> void validarNumeroMayorA(T value, T otro, String mensaje) {
+        if (value.compareTo(otro) <= 0) {
+            throw new IllegalArgumentException(mensaje);
+        }
+    }
+
+    public static <T extends Number & Comparable<T>> void validarNumeroMenorA(T value, T otro, String mensaje) {
+        if (value.compareTo(otro) >= 0) {
+            throw new IllegalArgumentException(mensaje);
+        }
+    }
+
     public static void validarNumeroDistintoCero(Integer value, String mensaje) {
         if (value == 0) {
             throw new IllegalArgumentException(mensaje);
@@ -37,8 +49,8 @@ public class Validaciones {
         }
     }
 
-    public static void validarNumeroEntre(Double value, Double desde, Double hasta, String mensaje) {
-        if (value < desde || value > hasta) {
+    public static <T extends Number & Comparable<T>> void validarNumeroEntre(T value, T desde, T hasta, String mensaje) {
+        if (value.compareTo(desde) < 0 || value.compareTo(hasta) > 0) {
             throw new IllegalArgumentException(mensaje);
         }
     }
