@@ -1,29 +1,31 @@
 package examenes.parciales.indicadorDeCanal;
 
+import validaciones.Validaciones;
+
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 public class IndicadorDeCanal {
-
-    // TODO: 1. Crear arr de canales
-    // TODO: 2. Validar límites en 'avanzar' y 'retroceder'
-    // TODO: 3. Revisar la lógica de 'seleccionar' para revisar que sea un canal válido.
-    // TODO: 4. Revisar la lógica de 'volver' y ver si tiene sentido. (?)
-    // TODO: 5. Revisar que no se rompa el encapsulamiento.
-    // TODO: 6. Decidir qué hacer con los límites de los canales al 'avanzar' o 'retroceder' (romper o %)
-
-    private final Canal canalMinimo;
-    private final Canal canalMaximo;
     private Canal[] canales;
-    private Canal canalActual;
-    private Canal canalPrevio;
-    private int indiceProximoCanal;
+    private final int[] indicesDeCanales;
 
     public IndicadorDeCanal(Canal canalMinimo, Canal canalMaximo) {
-        this.canalMinimo = canalMinimo;
-        this.canalMaximo = canalMaximo;
-        this.canalActual = canalMinimo;
-        this.canalPrevio = null;
-        this.indiceProximoCanal = 0;
+        Validaciones.validarNotNull(canalMinimo, "'canalMinimo' debe ser no nulo");
+        Validaciones.validarNotNull(canalMaximo, "'canalMaximo' debe ser no nulo");
+        Validaciones.validarNumeroMenorA(canalMinimo.getNumero(), canalMaximo.getNumero(), "Debe ser " +
+                "'canalMinimo' < 'canalMaximo'");
+        inicializarCanales(canalMinimo, canalMaximo);
+        this.indicesDeCanales = new int[]{0, 0}; // (indiceActual, indicePrevio)
+    }
+
+    private void inicializarCanales(Canal canalMinimo, Canal canalMaximo) {
+        int longitudDeCanales = canalMaximo.getNumero() - canalMinimo.getNumero() + 1;
+        canales = new Canal[longitudDeCanales];
+        canales[0] = canalMinimo;
+        canales[longitudDeCanales-1] = canalMaximo;
+        for (int i = 1; i < canales.length - 1; i++) {
+            canales[i] = new Canal(canalMinimo.getNumero() + i);
+        }
     }
 
     public int contar() {
@@ -33,24 +35,57 @@ public class IndicadorDeCanal {
     }
 
     public int obtener() {
-        return canalActual.getNumero();
+        int indiceCanalActual = indicesDeCanales[0];
+        return canales[indiceCanalActual].getNumero();
     }
 
     public void seleccionar(Canal canal) {
-        canalActual = canal;
+        validarCanal(canal);
+        int nuevoIndiceDeCanal = obtenerIndiceDelCanal(canal);
+        int indiceCanalActual = indicesDeCanales[0];
+        actualizarIndicesDeCanales(nuevoIndiceDeCanal, indiceCanalActual);
+    }
+
+    private int obtenerIndiceDelCanal(Canal canal) {
+        for (int i = 0; i < canales.length; i++) {
+            if (canales[i].equals(canal)) {
+                return i;
+            }
+        }
+        throw new NoSuchElementException("No existe tal canal");
+    }
+
+    private void validarCanal(Canal canal) {
+        if (!estaEnRangoDeCanales(canal)) {
+            throw new RuntimeException("El canal no es válido");
+        }
+    }
+
+    private boolean estaEnRangoDeCanales(Canal canal) {
+        int numeroDelCanal = canal.getNumero();
+        return (canales[0].getNumero() < numeroDelCanal) &&
+                (numeroDelCanal < canales[canales.length-1].getNumero());
     }
 
     public void avanzar() {
-        canalActual = canales[++indiceProximoCanal];
+        int indiceCanalActual = indicesDeCanales[0];
+        actualizarIndicesDeCanales((indiceCanalActual + 1) % canales.length, indiceCanalActual);
     }
 
     public void retroceder() {
-        canalActual = canales[--indiceProximoCanal];
+        int indiceCanalActual = indicesDeCanales[0];
+        actualizarIndicesDeCanales((indiceCanalActual - 1) % canales.length, indiceCanalActual);
+
     }
 
     public void volver() {
-        Canal temp = canalActual;
-        canalActual = canalPrevio;
-        canalPrevio = temp;
+        int indiceActual = indicesDeCanales[0];
+        int indicePrevio = indicesDeCanales[1];
+        actualizarIndicesDeCanales(indicePrevio, indiceActual);
+    }
+
+    private void actualizarIndicesDeCanales(int nuevoIndiceActual, int nuevoIndicePrevio) {
+        indicesDeCanales[0] = nuevoIndiceActual;
+        indicesDeCanales[1] = nuevoIndicePrevio;
     }
 }
