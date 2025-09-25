@@ -3,57 +3,73 @@ package examenes.parciales.pastillero;
 import validaciones.Validaciones;
 
 /**
- * Representa un pastillero que tiene una cantidad de pastillas y dosificación
- * que indica frecuencia de toma de las mismas.
+ * TDA que representa un pastillero con control de tomas y horarios.
+ * Gestiona la cantidad de pastillas disponibles y verifica el cumplimiento
+ * del tiempo mínimo entre tomas.
  */
 public class Pastillero {
 
     private int cantidadDePastillas;
     private final int frecuenciaDeToma;
     private final int[] horarios;
+    private Integer ultimaHoraToma;
     private int indiceProximaToma;
 
     /**
-     * Constructor.
-     * @param cantidadDePastillas: cantidad de pastillas totales.
-     * @param frecuenciaDeToma: frecuencia de toma las pastillas. Debe ser un
-     *                        número entero en el intervalo [1, 24].
+     * Crea un nuevo pastillero con la cantidad y frecuencia especificadas.
+     *
+     * @param cantidadDePastillas Cantidad inicial de pastillas (debe ser > 0)
+     * @param frecuenciaDeToma Tiempo mínimo entre tomas en horas (debe estar entre 1 y 24)
+     * @throws IllegalArgumentException si los parámetros no son válidos
      */
     public Pastillero(int cantidadDePastillas, int frecuenciaDeToma) {
-        Validaciones.validarNumeroMayorACero(cantidadDePastillas, "'cantidadDePastillas' debe ser > 0");
-        Validaciones.validarNumeroEntre(frecuenciaDeToma, 1, 24, "Debe ser " +
-                "1 <= 'frecuenciaDeToma' <= 24");
+        Validaciones.validarNumeroMayorACero(cantidadDePastillas,
+                "La cantidad de pastillas debe ser mayor a cero");
+        Validaciones.validarNumeroEntre(frecuenciaDeToma, 1, 24,
+                "La frecuencia de toma debe estar entre 1 y 24 horas");
         this.cantidadDePastillas = cantidadDePastillas;
         this.frecuenciaDeToma    = frecuenciaDeToma;
         this.horarios            = new int[cantidadDePastillas];
+        this.ultimaHoraToma      = null;
         this.indiceProximaToma   = 0;
     }
 
-    // === MÉTODOS DE COMPORTAMIENTO (PÚBLICOS) ===
+    // === MÉTODOS PÚBLICOS ===
 
     /**
-     * Devuelve la cantidad de pastillas restantes en el pastillero.
-     * @return cantidad de pastillas restantes.
+     * Obtiene la cantidad de pastillas restantes.
+     *
+     * @return Cantidad de pastillas disponibles
      */
     public int cantidadDePastillasRestantes() {
         return cantidadDePastillas;
     }
 
+    /**
+     * Registra la toma de una pastilla en la hora especificada.
+     *
+     * @param horaDelDia Hora de la toma (0-23)
+     * @throws IllegalArgumentException si la hora no es válida o si no hay pastillas disponibles
+     * @throws IllegalStateException si se intenta tomar antes del tiempo mínimo permitido
+     */
     public void tomarPastilla(int horaDelDia) {
-        Validaciones.validarNumeroEntre(horaDelDia, 0, 23, "Debe ser 0 <= 'horaDelDia' <= 23");
+        Validaciones.validarNumeroEntre(horaDelDia, 0, 23,
+                "La hora debe estar entre 0 y 23");
         validarDisponibilidadDePastillas();
-        cantidadDePastillas--;
         horarios[indiceProximaToma++] = horaDelDia;
+        ultimaHoraToma = horaDelDia;
+        cantidadDePastillas--;
     }
 
     /**
-     * Devuelve el horario de la próxima toma de pastillas.
-     * @return horario de la proxima toma.
+     * Calcula la hora recomendada para la próxima toma.
+     *
+     * @return Hora de la próxima toma (0-23)
+     * @throws IllegalStateException si no se ha iniciado el tratamiento
      */
     public int horaProximaToma() {
         validarInicioTratamiento();
-        int horaUltimaToma = horarios[indiceProximaToma - 1];
-        return (horaUltimaToma + frecuenciaDeToma) % 24;
+        return (ultimaHoraToma + frecuenciaDeToma) % 24;
     }
 
     /**
@@ -62,15 +78,20 @@ public class Pastillero {
      * @return cantidad de tomas a deshoras.
      */
     public int cantidadDeTomasADeshora() {
-        int total = 0;
-        int[] horariosIdeales = obtenerHorariosDeToma();
+        if (horarios.length < 2) {
+            return 0; // Se necesitan al menos 2 tomas para evaluar
+        }
+        int tomasADeshora = 0;
 
-        for (int i = 0; i < indiceProximaToma; i++) {
-            if (horarios[i] > horariosIdeales[i]) {
-                total++;
+        for (int i = 1; i < indiceProximaToma - 1; i++) {
+            int horaTomaActual = horarios[i];
+            int horaTomaAnterior = horarios[i-1];
+
+            if (esTomaDeshora(horaTomaActual, horaTomaAnterior)) {
+                tomasADeshora++;
             }
         }
-        return total;
+        return tomasADeshora;
     }
 
     /**
@@ -88,7 +109,21 @@ public class Pastillero {
      * @return verdadero si se ha tomado al menos una pastilla.
      */
     private boolean seHaIniciadoElTratamiento() {
-        return indiceProximaToma > 0;
+        return ultimaHoraToma != null;
+    }
+
+    private boolean esTomaDeshora(int horaTomaActual, int horaTomaAnterior) {
+        int horasTranscurridas = calcularHorasTranscurridas(horaTomaAnterior, horaTomaActual);
+        return horasTranscurridas < frecuenciaDeToma;
+    }
+
+    private int calcularHorasTranscurridas(int horaInicio, int horaFin) {
+        if (horaFin >= horaInicio) {
+            return horaFin - horaInicio;
+        } else {
+            // La toma fue al día siguiente
+            return (24 - horaInicio) + horaFin;
+        }
     }
 
     /**
@@ -107,20 +142,6 @@ public class Pastillero {
         if (!seHaIniciadoElTratamiento()) {
             throw new RuntimeException("Aún no se han tomado pastillas");
         }
-    }
-
-    /**
-     * Devuelve un arreglo con los horarios correctos de toma de pastillas.
-     * En caso de no haber tomado ninguna, devuelve un arreglo vacío.
-     * @return el arreglo de horarios de toma correctos.
-     */
-    private int[] obtenerHorariosDeToma() {
-        int[] horariosIdeales = new int[indiceProximaToma];
-        int horarioPrimerToma = horarios[0];
-        for (int i = 0; i < indiceProximaToma; i++) {
-            horariosIdeales[i] = (horarioPrimerToma + frecuenciaDeToma * i) % 24;
-        }
-        return horariosIdeales;
     }
 
 }
