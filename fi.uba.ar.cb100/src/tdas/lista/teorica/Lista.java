@@ -46,7 +46,22 @@ public class Lista<T> {
         return current.getDato();
     }
 
+    public boolean contains(T key) {
+        NodoSimplementeEnlazado<T> current = primero;
+        while (current != null) {
+            if (current.getDato().equals(key)) {
+                return true;
+            }
+            current = current.getProximo();
+        }
+        return false;
+    }
+
     public boolean isEmpty() {
         return this.size == 0;
+    }
+
+    public int size() {
+        return size;
     }
 }
