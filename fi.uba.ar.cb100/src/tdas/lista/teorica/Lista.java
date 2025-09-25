@@ -18,7 +18,22 @@ public class Lista<T> {
     }
 
     public void add(int index, T element) {
+        if ((index < 0) || (index > size)) {
+            throw new IndexOutOfBoundsException("Out of bounds!");
+        }
 
+        NodoSimplementeEnlazado<T> nuevo = new NodoSimplementeEnlazado<>(element);
+        if (primero == null) {
+            primero = nuevo;
+        } else {
+            NodoSimplementeEnlazado<T> current = primero;
+            for (int i = 0; i < index - 1; i++) {
+                current = current.getProximo();
+            }
+            nuevo.setProximo(current.getProximo());
+            current.setProximo(nuevo);
+        }
+        size++;
     }
 
     public void addLast(T element) {
@@ -36,7 +51,7 @@ public class Lista<T> {
     }
 
     public T get(int index) {
-        if (index < 0 || index > size) {
+        if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Out of bounds!");
         }
         NodoSimplementeEnlazado<T> current = primero;
