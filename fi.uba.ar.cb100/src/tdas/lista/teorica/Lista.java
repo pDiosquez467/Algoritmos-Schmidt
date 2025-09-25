@@ -12,6 +12,11 @@ public class Lista<T> {
         this.size = 0;
     }
 
+    public boolean add(T element) {
+        addLast(element);
+        return true;
+    }
+
     public void addLast(T element) {
         NodoSimplementeEnlazado<T> node = new NodoSimplementeEnlazado<>(element);
         if (primero == null) {
