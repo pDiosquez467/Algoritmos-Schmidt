@@ -17,6 +17,10 @@ public class Lista<T> {
         return true;
     }
 
+    public void add(int index, T element) {
+
+    }
+
     public void addLast(T element) {
         NodoSimplementeEnlazado<T> node = new NodoSimplementeEnlazado<>(element);
         if (primero == null) {
@@ -29,6 +33,17 @@ public class Lista<T> {
             current.setProximo(node);
         }
         size++;
+    }
+
+    public T get(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Out of bounds!");
+        }
+        NodoSimplementeEnlazado<T> current = primero;
+        for (int i = 0; i < index; i++) {
+            current = current.getProximo();
+        }
+        return current.getDato();
     }
 
     public boolean isEmpty() {
