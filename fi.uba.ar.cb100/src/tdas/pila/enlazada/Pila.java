@@ -35,8 +35,8 @@ public class Pila<T> {
         if (this.estaVacia()) {
             throw new PilaException("Pila vacía");
         }
-        T dato = this.tope.getDato();
-        this.tope = this.tope.getProx();
+        T dato = this.tope.dato();
+        this.tope = this.tope.proximo();
         return dato;
     }
 
@@ -49,7 +49,7 @@ public class Pila<T> {
         if (this.estaVacia()) {
             throw new PilaException("Pila vacía");
         }
-        return this.tope.getDato();
+        return this.tope.dato();
     }
 
     /**
