@@ -278,6 +278,113 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
+    void testRemove_EnMedio_Integridad() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast("A"); // Índice 0
+        lista.addLast("B"); // Índice 1 (El vecino anterior al removido)
+        lista.addLast("C"); // Índice 2 (El nodo a remover)
+        lista.addLast("D"); // Índice 3 (El vecino siguiente al removido)
+
+        // 1. Verificación inicial
+        Assertions.assertEquals(4, lista.size());
+
+        // 2. Ejecutar la remoción
+        String removido = lista.remove(2); // Se remueve "C"
+
+        // 3. Verificación de resultado
+        Assertions.assertEquals(3, lista.size(), "El tamaño debe ser 3.");
+        Assertions.assertEquals("C", removido, "Se debe retornar el valor 'C'.");
+
+        // 4. Verificación de re-conexión de vecinos: "B" debe apuntar a "D"
+        Assertions.assertEquals("B", lista.get(1), "El vecino anterior ('B') debe mantenerse en el índice 1.");
+        Assertions.assertEquals("D", lista.get(2), "El vecino siguiente ('D') debe moverse al índice 2.");
+    }
+
+    @Test
+    void testRemove_AlFinal_Borde() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast(10);
+        lista.addLast(20);
+        lista.addLast(30); // Índice 2 (último)
+
+        // 1. Verificación inicial
+        Assertions.assertEquals(3, lista.size());
+
+        // 2. Ejecutar la remoción
+        Integer removido = lista.remove(2);
+
+        // 3. Verificación de resultado
+        Assertions.assertEquals(2, lista.size(), "El tamaño debe ser 2.");
+        Assertions.assertEquals(30, removido, "Se debe retornar el valor 30.");
+
+        // 4. Verificación de que el nuevo último elemento es el anterior (20)
+        Assertions.assertEquals(20, lista.get(1), "El elemento en el nuevo último índice (1) debe ser 20.");
+
+        // Asumimos que la implementación actualiza un puntero 'ultimo' de la lista
+        // (No se puede probar sin acceso a 'ultimo', pero el get(1) lo confirma).
+    }
+
+    @Test
+    void testRemove_AlPrincipio_Borde() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast(10); // Índice 0 (a remover)
+        lista.addLast(20); // Índice 1 (nuevo primero)
+        lista.addLast(30);
+
+        // 1. Verificación inicial
+        Assertions.assertEquals(3, lista.size());
+
+        // 2. Ejecutar la remoción
+        Integer removido = lista.remove(0);
+
+        // 3. Verificación de resultado
+        Assertions.assertEquals(2, lista.size(), "El tamaño debe ser 2.");
+        Assertions.assertEquals(10, removido, "Se debe retornar el valor 10.");
+
+        // 4. Verificación de que el nuevo primero es el 20
+        Assertions.assertEquals(20, lista.get(0), "El elemento en el nuevo índice 0 debe ser 20.");
+
+        // Asumimos que la implementación actualiza el puntero 'primero' a 20.
+    }
+
+    @Test
+    void testRemove_ListaUnitaria() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("Uno Solo");
+
+        // 1. Verificación inicial
+        Assertions.assertEquals(1, lista.size());
+
+        // 2. Ejecutar la remoción
+        String removido = lista.remove(0);
+
+        Assertions.assertEquals(0, lista.size(), "El tamaño debe ser 0.");
+        Assertions.assertTrue(lista.isEmpty(), "La lista debe estar vacía.");
+        Assertions.assertEquals("Uno Solo", removido);
+
+    }
+
+    @Test
+    void testRemove_IndicesInvalidos_Excepciones() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+        lista.addLast(10);
+        lista.addLast(20);
+
+        // 1. Índice negativo
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+            lista.remove(-1);
+        }, "Debe lanzar IndexOutOfBoundsException para índices negativos.");
+
+        // 2. Índice igual o mayor al tamaño (fuera de rango)
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+            lista.remove(2); // El tamaño es 2, el índice válido máximo es 1
+        }, "Debe lanzar IndexOutOfBoundsException para índice igual o mayor al tamaño.");
+    }
+
+    @Test
     void testIndexOf_ElementoEnMedio() {
         ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
 
