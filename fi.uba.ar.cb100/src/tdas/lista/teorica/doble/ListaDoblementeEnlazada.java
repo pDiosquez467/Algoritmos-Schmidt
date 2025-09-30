@@ -1,5 +1,6 @@
 package tdas.lista.teorica.doble;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class ListaDoblementeEnlazada<T> {
@@ -77,6 +78,17 @@ public class ListaDoblementeEnlazada<T> {
         return actual.dato();
     }
 
+    public int indexOf(T dato) {
+        NodoDoblementeEnlazado<T> actual = primero;
+        for (int i = 0; i < size ; i++) {
+            if (Objects.equals(dato, actual.dato())) {
+                return i;
+            }
+            actual = actual.siguiente();
+        }
+        return -1;
+    }
+
     public boolean contains(T dato) {
         NodoDoblementeEnlazado<T> actual = primero;
         while (actual != null) {
@@ -91,5 +103,18 @@ public class ListaDoblementeEnlazada<T> {
     public void clear() {
         primero = null;
         size = 0;
+    }
+
+    public T set(int indice, T dato) {
+        if (indice < 0 || indice >= size) {
+            throw new IndexOutOfBoundsException("Fuera de rango");
+        }
+        NodoDoblementeEnlazado<T> actual = primero;
+        for (int i = 0; i < indice; i++) {
+            actual = actual.siguiente();
+        }
+        T removido = actual.dato();
+        actual.dato(dato);
+        return removido;
     }
 }
