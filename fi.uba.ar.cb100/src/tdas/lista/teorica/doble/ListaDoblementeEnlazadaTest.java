@@ -276,4 +276,191 @@ public class ListaDoblementeEnlazadaTest {
         Assertions.assertNull(lista.get(0));
         Assertions.assertEquals("Intermedio", lista.get(1));
     }
+
+    @Test
+    void testIndexOf_ElementoEnMedio() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+
+        lista.add(12);
+        lista.add(24);
+        lista.add(54);
+        lista.add(56);
+
+        // Búsqueda del elemento 54 (índice 2)
+        Assertions.assertEquals(2, lista.indexOf(54),
+                "Debe retornar 2 para el valor 54.");
+    }
+
+    @Test
+    void testIndexOf_PrimerElemento() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("Inicio");
+        lista.add("Medio");
+        lista.add("Fin");
+
+        // Búsqueda del primer elemento (índice 0)
+        Assertions.assertEquals(0, lista.indexOf("Inicio"),
+                "Debe retornar 0 para el primer elemento.");
+    }
+
+    @Test
+    void testIndexOf_UltimoElemento() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add("B");
+        lista.add("C");
+
+        // Búsqueda del último elemento (índice 2)
+        Assertions.assertEquals(2, lista.indexOf("C"),
+                "Debe retornar el índice correcto para el último elemento.");
+    }
+
+    @Test
+    void testIndexOf_ElementoNulo() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add(null);
+        lista.add("B");
+
+        // Búsqueda de un elemento nulo (índice 1)
+        Assertions.assertEquals(1, lista.indexOf(null),
+                "Debe retornar el índice del primer elemento nulo encontrado.");
+    }
+
+    @Test
+    void testIndexOf_PrimeraOcurrenciaDeRepetido() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+        lista.add(10);
+        lista.add(20);
+        lista.add(10);
+        lista.add(30);
+
+        // Búsqueda de un elemento repetido, debe devolver la primera ocurrencia (índice 0)
+        Assertions.assertEquals(0, lista.indexOf(10),
+                "Debe retornar el índice de la primera ocurrencia (0).");
+    }
+
+    @Test
+    void testIndexOf_ElementoInexistente() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add("B");
+
+        // Búsqueda de un dato que no está presente
+        Assertions.assertEquals(-1, lista.indexOf("Z"),
+                "Debe retornar -1 si el elemento no se encuentra.");
+    }
+
+    @Test
+    void testIndexOf_ListaVacia() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+
+        // Búsqueda en una lista vacía
+        Assertions.assertEquals(-1, lista.indexOf(99),
+                "Debe retornar -1 al buscar en una lista vacía.");
+    }
+
+    @Test
+    void testIndexOf_BuscarNuloNoExistente() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add("B");
+
+        // Búsqueda de null en una lista sin nulls
+        Assertions.assertEquals(-1, lista.indexOf(null),
+                "Debe retornar -1 al buscar un valor nulo que no está presente.");
+    }
+
+    @Test
+    void testSet_ReemplazoCompletoYRetorno() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+        lista.add(10);  // Índice 0
+        lista.add(20);  // Índice 1
+        lista.add(30);  // Índice 2
+
+        // 1. Reemplazar el elemento del medio (índice 1)
+        Integer valorAnterior = lista.set(1, 200);
+
+        // Verificación del valor de retorno
+        Assertions.assertEquals(20, valorAnterior,
+                "set debe retornar el valor anterior (20).");
+
+        // 2. Verificación del valor nuevo
+        Assertions.assertEquals(200, lista.get(1),
+                "El valor en el índice 1 debe ser 200.");
+
+        // 3. Verificación de que el tamaño y los vecinos no cambiaron
+        Assertions.assertEquals(3, lista.size(), "El tamaño no debe cambiar.");
+        Assertions.assertEquals(10, lista.get(0), "El vecino 0 no debe cambiar.");
+        Assertions.assertEquals(30, lista.get(2), "El vecino 2 no debe cambiar.");
+    }
+
+    // ---
+
+    @Test
+    void testSet_CasosLimite() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("Primero");
+        lista.add("Medio");
+        lista.add("Ultimo");
+
+        // 1. Reemplazar el primer elemento (índice 0)
+        String antiguoPrimero = lista.set(0, "NuevoInicio");
+        Assertions.assertEquals("Primero", antiguoPrimero,
+                "El valor retornado para el índice 0 debe ser 'Primero'.");
+        Assertions.assertEquals("NuevoInicio", lista.get(0),
+                "El elemento en el índice 0 debe ser 'NuevoInicio'.");
+
+        // 2. Reemplazar el último elemento (índice size - 1)
+        String antiguoUltimo = lista.set(2, "NuevoFin");
+        Assertions.assertEquals("Ultimo", antiguoUltimo,
+                "El valor retornado para el último índice (2) debe ser 'Ultimo'.");
+        Assertions.assertEquals("NuevoFin", lista.get(2),
+                "El elemento en el índice 2 debe ser 'NuevoFin'.");
+
+        // 3. Verificar que el elemento del medio no se modificó
+        Assertions.assertEquals("Medio", lista.get(1),
+                "El elemento intermedio no debe haberse alterado.");
+    }
+
+    // ---
+
+    @Test
+    void testSet_ManejoDeNulos() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("NoNulo");
+        lista.add(null);
+
+        // Caso A: Reemplazar un valor nulo por un valor no nulo
+        String retornoA = lista.set(1, "NuevoValor");
+        Assertions.assertNull(retornoA,
+                "Al reemplazar null, debe retornar null.");
+        Assertions.assertEquals("NuevoValor", lista.get(1),
+                "El valor debe ser reemplazado correctamente por uno no nulo.");
+
+        // Caso B: Reemplazar un valor no nulo por un valor nulo
+        String retornoB = lista.set(0, null);
+        Assertions.assertEquals("NoNulo", retornoB,
+                "Al reemplazar 'NoNulo', debe retornar 'NoNulo'.");
+        Assertions.assertNull(lista.get(0),
+                "El valor debe ser reemplazado correctamente por null.");
+    }
+
+    // ---
+
+    @Test
+    void testSet_IndicesInvalidos() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+        lista.add(10);
+
+        // 1. Índice negativo
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+            lista.set(-1, 99);
+        }, "Debe lanzar IndexOutOfBoundsException para índices negativos.");
+
+        // 2. Índice igual al tamaño (fuera de rango)
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+            lista.set(1, 99); // El tamaño es 1, el índice válido es solo 0
+        }, "Debe lanzar IndexOutOfBoundsException para índice igual al tamaño.");
+    }
 }
