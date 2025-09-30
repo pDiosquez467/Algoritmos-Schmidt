@@ -9,6 +9,11 @@ public class ListaDoblementeEnlazada<T> {
         this.size    = 0;
     }
 
+    public boolean add(T dato) {
+        addLast(dato);
+        return true;
+    }
+
     public void addLast(T dato) {
         NodoDoblementeEnlazado<T> nuevo = new NodoDoblementeEnlazado<>(dato);
         if (primero == null) {
@@ -19,6 +24,33 @@ public class ListaDoblementeEnlazada<T> {
                 actual = actual.siguiente();
             }
             nuevo.anterior(actual);
+            actual.siguiente(nuevo);
+        }
+        size++;
+    }
+
+    public void add(int indice, T dato) {
+        if (indice < 0 || indice > size) {
+            throw new IndexOutOfBoundsException("Fuera de rango");
+        }
+
+        NodoDoblementeEnlazado<T> nuevo = new NodoDoblementeEnlazado<>(dato);
+        if (indice == 0) {
+            if (primero != null) {
+                primero.anterior(nuevo);
+                nuevo.siguiente(primero);
+            }
+            primero = nuevo;
+        } else {
+            NodoDoblementeEnlazado<T> actual = primero;
+            for (int i = 0; i < indice - 1; i++) {
+                actual = actual.siguiente();
+            }
+            nuevo.anterior(actual);
+            nuevo.siguiente(actual.siguiente());
+            if (actual.siguiente() != null) {
+                actual.anterior(nuevo);
+            }
             actual.siguiente(nuevo);
         }
         size++;
