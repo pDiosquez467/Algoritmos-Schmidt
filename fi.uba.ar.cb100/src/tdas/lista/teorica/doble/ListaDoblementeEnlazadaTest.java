@@ -278,7 +278,7 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
-    void testRemove_EnMedio_Integridad() {
+    void testPop_EnMedio_Integridad() {
         ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
 
         lista.addLast("A"); // Índice 0
@@ -290,7 +290,7 @@ public class ListaDoblementeEnlazadaTest {
         Assertions.assertEquals(4, lista.size());
 
         // 2. Ejecutar la remoción
-        String removido = lista.remove(2); // Se remueve "C"
+        String removido = lista.pop(2); // Se remueve "C"
 
         // 3. Verificación de resultado
         Assertions.assertEquals(3, lista.size(), "El tamaño debe ser 3.");
@@ -302,7 +302,7 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
-    void testRemove_AlFinal_Borde() {
+    void testPop_AlFinal_Borde() {
         ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
 
         lista.addLast(10);
@@ -313,7 +313,7 @@ public class ListaDoblementeEnlazadaTest {
         Assertions.assertEquals(3, lista.size());
 
         // 2. Ejecutar la remoción
-        Integer removido = lista.remove(2);
+        Integer removido = lista.pop(2);
 
         // 3. Verificación de resultado
         Assertions.assertEquals(2, lista.size(), "El tamaño debe ser 2.");
@@ -327,7 +327,7 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
-    void testRemove_AlPrincipio_Borde() {
+    void testPop_AlPrincipio_Borde() {
         ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
 
         lista.addLast(10); // Índice 0 (a remover)
@@ -338,7 +338,7 @@ public class ListaDoblementeEnlazadaTest {
         Assertions.assertEquals(3, lista.size());
 
         // 2. Ejecutar la remoción
-        Integer removido = lista.remove(0);
+        Integer removido = lista.pop(0);
 
         // 3. Verificación de resultado
         Assertions.assertEquals(2, lista.size(), "El tamaño debe ser 2.");
@@ -351,7 +351,7 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
-    void testRemove_ListaUnitaria() {
+    void testPop_ListaUnitaria() {
         ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
         lista.add("Uno Solo");
 
@@ -359,7 +359,7 @@ public class ListaDoblementeEnlazadaTest {
         Assertions.assertEquals(1, lista.size());
 
         // 2. Ejecutar la remoción
-        String removido = lista.remove(0);
+        String removido = lista.pop(0);
 
         Assertions.assertEquals(0, lista.size(), "El tamaño debe ser 0.");
         Assertions.assertTrue(lista.isEmpty(), "La lista debe estar vacía.");
@@ -368,19 +368,133 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
-    void testRemove_IndicesInvalidos_Excepciones() {
+    void testRemove_DatoEnMedio() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast("A");
+        lista.addLast("B"); // El nodo anterior
+        lista.addLast("C"); // Dato a remover
+        lista.addLast("D"); // El nodo siguiente
+
+        Assertions.assertEquals(4, lista.size());
+
+        // 1. Ejecutar la remoción por valor
+        boolean exito = lista.remove("C");
+
+        // 2. Verificación de resultado y tamaño
+        Assertions.assertTrue(exito, "La remoción de 'C' debe retornar true.");
+        Assertions.assertEquals(3, lista.size(), "El tamaño debe ser 3.");
+
+        // 3. Verificación de la integridad de la lista: 'C' no debe estar, 'B' y 'D' deben ser vecinos.
+        Assertions.assertFalse(lista.contains("C"), "El elemento 'C' ya no debe estar en la lista.");
+        Assertions.assertEquals("B", lista.get(1), "El elemento en el índice 1 debe ser 'B'.");
+        Assertions.assertEquals("D", lista.get(2), "El elemento en el índice 2 debe ser 'D'.");
+    }
+
+    // ---
+
+    @Test
+    void testRemove_PrimeraOcurrencia() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast(5);
+        lista.addLast(10); // Primera ocurrencia
+        lista.addLast(20);
+        lista.addLast(10); // Segunda ocurrencia
+
+        Assertions.assertEquals(4, lista.size());
+
+        // 1. Remover el valor 10
+        boolean exito = lista.remove(10);
+
+        // 2. Verificación de resultado
+        Assertions.assertTrue(exito, "Debe retornar true.");
+        Assertions.assertEquals(3, lista.size(), "Solo debe eliminar una ocurrencia.");
+
+        // 3. Verificación de qué ocurrencia eliminó y la integridad
+        Assertions.assertEquals(5, lista.get(0), "El elemento 5 debe ser el primero.");
+        Assertions.assertEquals(20, lista.get(1), "El elemento 20 (índice 2) se movió al índice 1.");
+        Assertions.assertEquals(10, lista.get(2), "La segunda ocurrencia de 10 aún debe estar en la lista.");
+    }
+
+    // ---
+
+    @Test
+    void testRemove_NoEncontrado() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.addLast("A");
+        lista.addLast("B");
+
+        Assertions.assertEquals(2, lista.size());
+
+        // 1. Remover un dato que no existe
+        boolean exito = lista.remove("X");
+
+        // 2. Verificación de resultado
+        Assertions.assertFalse(exito, "Al no encontrar el dato, debe retornar false.");
+        Assertions.assertEquals(2, lista.size(), "El tamaño no debe cambiar.");
+
+        // 3. Verificar que la lista sigue igual
+        Assertions.assertTrue(lista.contains("A"));
+    }
+
+    // ---
+
+    @Test
+    void testRemove_DatoNulo() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.addLast("A");
+        lista.addLast(null); // Dato nulo
+        lista.addLast("B");
+
+        Assertions.assertEquals(3, lista.size());
+
+        // 1. Remover el valor null
+        boolean exito = lista.remove(null);
+
+        // 2. Verificación de resultado
+        Assertions.assertTrue(exito, "Debe retornar true al remover un valor nulo existente.");
+        Assertions.assertEquals(2, lista.size(), "El tamaño debe ser 2.");
+
+        // 3. Verificar que null ya no está y que los vecinos se conectaron
+        Assertions.assertFalse(lista.contains(null));
+        Assertions.assertEquals("B", lista.get(1), "El elemento 'B' debe estar al lado de 'A'.");
+    }
+
+
+    @Test
+    void testRemove_UnicoElemento() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.addLast("Unico");
+
+        Assertions.assertEquals(1, lista.size());
+
+        // 1. Remover el único elemento
+        boolean exito = lista.remove("Unico");
+
+        // 2. Verificación post-remoción
+        Assertions.assertTrue(exito, "Debe retornar true.");
+        Assertions.assertEquals(0, lista.size(), "El tamaño debe ser 0.");
+        Assertions.assertTrue(lista.isEmpty(), "La lista debe estar vacía.");
+
+        // 3. Intentar remover de nuevo (prueba implícita de que quedó vacía)
+        Assertions.assertFalse(lista.remove("Unico"), "No debe poder remover de nuevo.");
+    }
+
+    @Test
+    void testPop_IndicesInvalidos_Excepciones() {
         ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
         lista.addLast(10);
         lista.addLast(20);
 
         // 1. Índice negativo
         Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
-            lista.remove(-1);
+            lista.pop(-1);
         }, "Debe lanzar IndexOutOfBoundsException para índices negativos.");
 
         // 2. Índice igual o mayor al tamaño (fuera de rango)
         Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
-            lista.remove(2); // El tamaño es 2, el índice válido máximo es 1
+            lista.pop(2); // El tamaño es 2, el índice válido máximo es 1
         }, "Debe lanzar IndexOutOfBoundsException para índice igual o mayor al tamaño.");
     }
 
