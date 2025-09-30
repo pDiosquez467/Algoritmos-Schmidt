@@ -1,12 +1,12 @@
-package tdas.lista.teorica;
+package tdas.lista.teorica.simple;
 
-public class Lista<T> {
+public class ListaSimplementeEnlazada<T> {
 
     private NodoSimplementeEnlazado<T> primero;
     private NodoSimplementeEnlazado<T> cursor;
     private int size = 0;
 
-    public Lista() {
+    public ListaSimplementeEnlazada() {
         this.primero = null;
         this.cursor  = null;
         this.size = 0;
