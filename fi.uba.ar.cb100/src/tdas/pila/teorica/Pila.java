@@ -1,6 +1,7 @@
 package tdas.pila.teorica;
 
-import tdas.lista.ListaEnlazada;
+import tdas.lista.teorica.simple.ListaSimplementeEnlazada;
+import tdas.lista.teorica.simple.it.IteradorLista;
 import tdas.utils.Nodo;
 
 public class Pila<T> {
@@ -44,8 +45,12 @@ public class Pila<T> {
      * Agrega cada uno de los elementos de la lista dada en la pila.
      * @param lista lista de elementos a agregar a la pila.
      */
-    public void apilar(ListaEnlazada<T> lista) {
-
+    public void apilar(ListaSimplementeEnlazada<T> lista) {
+        IteradorLista<T> it = lista.iterador();
+        while (it.haySiguiente()) {
+            apilar(it.obtener());
+            it.siguiente();
+        }
     }
 
     /**
