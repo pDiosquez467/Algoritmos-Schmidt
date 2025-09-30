@@ -28,6 +28,97 @@ public class ListaDoblementeEnlazadaTest {
     }
 
     @Test
+    void testAddEnMedio_Integridad() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast("A");
+        lista.addLast("B"); // Índice 1
+        lista.addLast("C");
+
+        // La lista es: [A, B, C]
+
+        // 1. Inserción: Se inserta 'X' en el índice 2 (después de 'B', antes de 'C')
+        lista.add(2, "X");
+
+        // La lista esperada es: [A, B, X, C]
+
+        // 2. Verificación de tamaño
+        Assertions.assertEquals(4, lista.size());
+
+        // 3. Verificación de los elementos nuevos y reubicados
+        Assertions.assertEquals("X", lista.get(2), "El nuevo elemento 'X' debe estar en el índice 2.");
+        Assertions.assertEquals("B", lista.get(1), "El elemento 'B' debe mantenerse en el índice 1.");
+        Assertions.assertEquals("C", lista.get(3), "El elemento 'C' se debe haber movido al índice 3.");
+    }
+
+    // ---
+
+    @Test
+    void testAddAlPrincipio_Integridad() {
+        ListaDoblementeEnlazada<Integer> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast(10);
+        lista.addLast(20);
+
+        // La lista es: [10, 20]
+
+        // 1. Inserción: Se inserta 5 en el índice 0
+        lista.add(0, 5);
+
+        // La lista esperada es: [5, 10, 20]
+
+        // 2. Verificación de tamaño
+        Assertions.assertEquals(3, lista.size());
+
+        // 3. Verificación de los elementos
+        Assertions.assertEquals(5, lista.get(0), "El nuevo elemento '5' debe ser el primero.");
+        Assertions.assertEquals(10, lista.get(1), "El antiguo primero '10' debe moverse al índice 1.");
+        Assertions.assertEquals(20, lista.get(2), "El último elemento '20' no debe cambiar.");
+    }
+
+    // ---
+
+    @Test
+    void testAddAlFinal_Integridad() {
+        ListaDoblementeEnlazada<Double> lista = new ListaDoblementeEnlazada<>();
+
+        lista.addLast(1.1);
+        lista.addLast(2.2);
+
+        // La lista es: [1.1, 2.2]. El tamaño es 2.
+
+        // 1. Inserción: Se inserta 9.9 en el índice 2 (el final)
+        lista.add(2, 9.9);
+
+        // La lista esperada es: [1.1, 2.2, 9.9]
+
+        // 2. Verificación de tamaño
+        Assertions.assertEquals(3, lista.size());
+
+        // 3. Verificación de los elementos
+        Assertions.assertEquals(9.9, lista.get(2), "El nuevo elemento debe estar en el índice del tamaño anterior (2).");
+        Assertions.assertEquals(2.2, lista.get(1), "El penúltimo elemento debe mantenerse.");
+        Assertions.assertEquals(1.1, lista.get(0), "El primer elemento debe mantenerse.");
+    }
+
+    // ---
+
+    @Test
+    void testAddEnListaVacia() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        String dato = "Solo";
+
+        // 1. Inserción: Se inserta en el único índice válido (0) de una lista vacía.
+        lista.add(0, dato);
+
+        // 2. Verificación de tamaño
+        Assertions.assertEquals(1, lista.size());
+
+        // 3. Verificación de contenido
+        Assertions.assertEquals(dato, lista.get(0));
+    }
+
+    @Test
     void testAddLast_conNulosYRepetidos() {
         ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
         lista.addLast("A");
