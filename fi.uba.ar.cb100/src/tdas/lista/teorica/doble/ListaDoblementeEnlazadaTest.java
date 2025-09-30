@@ -101,7 +101,85 @@ public class ListaDoblementeEnlazadaTest {
         Assertions.assertEquals(1.1, lista.get(0), "El primer elemento debe mantenerse.");
     }
 
-    // ---
+
+    @Test
+    void testContains_PrimerElemento() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("Inicio");
+        lista.add("Medio");
+        lista.add("Fin");
+
+        Assertions.assertTrue(lista.contains("Inicio"),
+                "Debe retornar true al buscar el primer elemento de la lista.");
+    }
+
+    @Test
+    void testContains_UltimoElemento() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("Inicio");
+        lista.add("Medio");
+        lista.add("Fin");
+
+        // Prueba 2: El último elemento de la lista
+        Assertions.assertTrue(lista.contains("Fin"),
+                "Debe retornar true al buscar el último elemento de la lista.");
+    }
+
+    @Test
+    void testContains_ElementoNulo() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add(null);
+        lista.add("B");
+
+        // Prueba 3: El elemento nulo
+        Assertions.assertTrue(lista.contains(null),
+                "Debe retornar true si el elemento nulo está presente.");
+    }
+
+    @Test
+    void testContains_Repetido() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("Dato");
+        lista.add("Repetido");
+        lista.add("Dato");
+
+        // Prueba 4: Un elemento repetido
+        Assertions.assertTrue(lista.contains("Dato"),
+                "Debe retornar true si un elemento repetido está presente.");
+    }
+
+    @Test
+    void testContains_NoEncontrado() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add("B");
+        lista.add("C");
+
+        // Prueba 5: Un dato que no existe
+        Assertions.assertFalse(lista.contains("X"),
+                "Debe retornar false si el elemento no está en la lista.");
+    }
+
+    @Test
+    void testContains_EnListaVacia() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+
+        // Prueba 6: Búsqueda en una lista vacía
+        Assertions.assertFalse(lista.contains("Dato"),
+                "Debe retornar false al buscar cualquier cosa en una lista vacía.");
+    }
+
+    @Test
+    void testContains_BuscarNuloNoExistente() {
+        ListaDoblementeEnlazada<String> lista = new ListaDoblementeEnlazada<>();
+        lista.add("A");
+        lista.add("B");
+
+        // Prueba 7: Buscar null en una lista que no lo contiene
+        Assertions.assertFalse(lista.contains(null),
+                "Debe retornar false al buscar null si este no está en la lista.");
+    }
 
     @Test
     void testAddEnListaVacia() {
