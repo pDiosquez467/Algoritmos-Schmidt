@@ -58,7 +58,7 @@ public class ListaDoblementeEnlazada<T> {
         size++;
     }
 
-    public T remove(int indice) {
+    public T pop(int indice) {
         if (indice < 0 || indice >= size) {
             throw new IndexOutOfBoundsException("Fuera de rango");
         }
@@ -88,12 +88,31 @@ public class ListaDoblementeEnlazada<T> {
     }
 
     public boolean remove(T dato) {
+        NodoDoblementeEnlazado<T> actual = primero;
+        while (actual != null) {
+            if (Objects.equals(dato, actual.dato())) {
+                NodoDoblementeEnlazado<T> anterior  = actual.anterior();
+                NodoDoblementeEnlazado<T> siguiente = actual.siguiente();
 
+                if (anterior == null && siguiente == null) {
+                    primero = null;
+                } else {
+                    if (anterior == null) {
+                        siguiente.anterior(null);
+                        primero = siguiente;
+                    } else {
+                        anterior.siguiente(siguiente);
+                    }
 
-
-
-
-
+                    if (siguiente != null) {
+                        siguiente.anterior(anterior);
+                    }
+                }
+                size--;
+                return true;
+            }
+            actual = actual.siguiente();
+        }
         return false;
     }
 
