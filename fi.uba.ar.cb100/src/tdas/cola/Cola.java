@@ -1,6 +1,5 @@
 package tdas.cola;
 
-import tdas.cola.excepciones.ColaException;
 import tdas.utils.Nodo;
 
 /**
@@ -39,14 +38,14 @@ public class Cola<T> {
     /**
      * Desencola y devuelve el primer elemento de la cola.
      * @return el primer elemento de la cola.
-     * @throws ColaException si la cola está vacía.
+     * @throws RuntimeException si la cola está vacía.
      */
-    public T desencolar() throws ColaException {
+    public T desencolar() {
         if (this.estaVacia()) {
-            throw new ColaException("Cola vacía");
+            throw new RuntimeException("Cola vacía");
         }
-        T dato = this.primero.getDato();
-        this.primero = this.primero.getProx();
+        T dato = this.primero.dato();
+        this.primero = this.primero.proximo();
 
         if (this.primero == null) {
             this.ultimo = null;
@@ -58,13 +57,13 @@ public class Cola<T> {
     /**
      * Devuelve el elemento que está en el primer lugar en la cola.
      * @return el primer elemento.
-     * @throws ColaException si la cola está vacía.
+     * @throws RuntimeException si la cola está vacía.
      */
-    public T verPrimero() throws ColaException {
+    public T verPrimero() {
         if (this.estaVacia()) {
-            throw new ColaException("Cola vacía");
+            throw new RuntimeException("Cola vacía");
         }
-        return this.primero.getDato();
+        return this.primero.dato();
     }
 
     /**
