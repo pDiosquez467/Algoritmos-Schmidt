@@ -23,6 +23,13 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
 
     @Override
     public boolean contains(Object o) {
+        NodoSimplementeEnlazado<T> current = this.head;
+        while (current != null) {
+            if (Objects.equals(current.data(), o)) {
+                return true;
+            }
+            current = current.next();
+        }
         return false;
     }
 
@@ -79,8 +86,23 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> collection) {
-        return false;
+    public boolean containsAll(Collection<?> c) {
+        if (c.isEmpty()) return true;
+        if (this.isEmpty()) return false;
+
+        Set<T> set = new HashSet<>();
+        NodoSimplementeEnlazado<T> current = this.head;
+        while (current != null) {
+            set.add(current.data());
+            current = current.next();
+        }
+
+        for (Object element : c) {
+            if (!set.contains(element)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
