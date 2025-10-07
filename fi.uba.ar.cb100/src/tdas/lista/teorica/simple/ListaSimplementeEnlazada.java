@@ -97,8 +97,16 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
     }
 
     @Override
-    public T get(int i) {
-        return null;
+    public T get(int index) {
+        if (index < 0 || index >= this.size) {
+            throw new IndexOutOfBoundsException("Índice: " + index + ", Tamaño: " + size);
+        }
+
+        NodoSimplementeEnlazado<T> current = this.head;
+        for (int i = 0; i < index; i++) {
+            current = current.next();
+        }
+        return current.value();
     }
 
     @Override
