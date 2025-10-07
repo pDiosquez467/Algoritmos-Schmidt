@@ -166,7 +166,16 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        NodoSimplementeEnlazado<T> current = this.head;
+        int index = 0;
+        while (current != null) {
+            if (Objects.equals(current.data(), o)) {
+                return index;
+            }
+            current = current.next();
+            index++;
+        }
+        return -1;
     }
 
     @Override
