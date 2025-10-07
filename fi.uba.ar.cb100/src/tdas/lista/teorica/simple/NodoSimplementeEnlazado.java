@@ -1,34 +1,32 @@
 package tdas.lista.teorica.simple;
 
-import tdas.lista.teorica.doble.NodoDoblementeEnlazado;
-
 public class NodoSimplementeEnlazado<T> {
-    private T value;
-    private NodoDoblementeEnlazado<T> next;
+    private T data;
+    private NodoSimplementeEnlazado<T> next;
 
-    public NodoSimplementeEnlazado(T value, NodoDoblementeEnlazado<T> next) {
-        this.value = value;
+    public NodoSimplementeEnlazado(T data, NodoSimplementeEnlazado<T> next) {
+        this.data = data;
         this.next = next;
     }
 
-    public NodoSimplementeEnlazado(T value) {
-        this(value, null);
+    public NodoSimplementeEnlazado(T data) {
+        this(data, null);
     }
 
     public T value() {
-        return value;
+        return data;
     }
 
-    public NodoSimplementeEnlazado<T> setValue(T value) {
-        this.value = value;
+    public NodoSimplementeEnlazado<T> setData(T data) {
+        this.data = data;
         return this;
     }
 
-    public NodoDoblementeEnlazado<T> next() {
+    public NodoSimplementeEnlazado<T> next() {
         return next;
     }
 
-    public NodoSimplementeEnlazado<T> setNext(NodoDoblementeEnlazado<T> next) {
+    public NodoSimplementeEnlazado<T> setNext(NodoSimplementeEnlazado<T> next) {
         this.next = next;
         return this;
     }
