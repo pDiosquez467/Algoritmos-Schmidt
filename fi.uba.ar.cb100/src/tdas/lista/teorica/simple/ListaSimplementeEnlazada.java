@@ -222,7 +222,15 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        int lastIndex = -1;
+        int currentIndex = 0;
+        for (NodoSimplementeEnlazado<T> current = this.head; current != null; current = current.next()) {
+            if (Objects.equals(current.data(), o)) {
+                lastIndex = currentIndex;
+            }
+            currentIndex++;
+        }
+        return lastIndex;
     }
 
     @Override
