@@ -139,8 +139,24 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
     }
 
     @Override
-    public void add(int i, T t) {
+    public void add(int index, T t) {
+        if (index < 0 || index > this.size) {
+            throw new IndexOutOfBoundsException("Índice: " + index + ", Tamaño: " + size);
+        }
 
+        NodoSimplementeEnlazado<T> node = new NodoSimplementeEnlazado<>(t);
+        if (index == 0) {
+            node.setNext(this.head);
+            this.head = node;
+        } else {
+            NodoSimplementeEnlazado<T> current = this.head;
+            for (int i = 0; i < index - 1; i++) {
+                current = current.next();
+            }
+            node.setNext(current.next());
+            current.setNext(node);
+        }
+        this.size++;
     }
 
     @Override
