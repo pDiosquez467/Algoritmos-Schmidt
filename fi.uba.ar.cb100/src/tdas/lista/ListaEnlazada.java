@@ -1,7 +1,5 @@
 package tdas.lista;
 
-import tdas.utils.Nodo;
-
 import java.util.NoSuchElementException;
 
 /**
@@ -14,7 +12,7 @@ public class ListaEnlazada<T> {
      * Representa un nodo interno de la lista.
      * @param <T>: El tipo de los elementos del nodo (coincide con el de la lista)
      */
-    private class Nodo<T> {
+    private static class Nodo<T> {
         private final T dato;
         private Nodo<T> proximo;
 
