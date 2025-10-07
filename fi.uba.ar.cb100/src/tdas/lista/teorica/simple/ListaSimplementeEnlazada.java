@@ -37,7 +37,7 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
     }
 
     @Override
-    public <T1> T1[] toArray(T1[] t1s) {
+    public <E> E[] toArray(E[] t1s) {
         return null;
     }
 
@@ -160,8 +160,28 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
     }
 
     @Override
-    public T remove(int i) {
-        return null;
+    public T remove(int index) {
+        if (index < 0 || index >= this.size) {
+            throw new IndexOutOfBoundsException("Índice: " + index + ", Tamaño: " + size);
+        }
+
+        NodoSimplementeEnlazado<T> current = this.head;
+        NodoSimplementeEnlazado<T> previous = null;
+        for (int i = 0; i < index; i++) {
+            previous = current;
+            current = current.next();
+        }
+
+        T data = current.data();
+
+        if (previous == null) {
+            this.head = current.next();
+        } else {
+            previous.setNext(current.next());
+        }
+
+        this.size--;
+        return data;
     }
 
     @Override
