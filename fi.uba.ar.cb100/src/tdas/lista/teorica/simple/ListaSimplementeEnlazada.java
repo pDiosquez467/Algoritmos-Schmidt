@@ -1,9 +1,6 @@
 package tdas.lista.teorica.simple;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 public class ListaSimplementeEnlazada<T> implements List<T> {
     private NodoSimplementeEnlazado<T> head;
@@ -62,6 +59,22 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
 
     @Override
     public boolean remove(Object o) {
+        NodoSimplementeEnlazado<T> current  = this.head;
+        NodoSimplementeEnlazado<T> previous = null;
+        while (current != null) {
+            if (Objects.equals(current.data(), o)) {
+                if (previous == null) {
+                    this.head = current.next();
+                } else {
+                    previous.setNext(current.next());
+                }
+                current.setNext(null);
+                this.size--;
+                return true;
+            }
+            previous = current;
+            current = current.next();
+        }
         return false;
     }
 
@@ -106,7 +119,7 @@ public class ListaSimplementeEnlazada<T> implements List<T> {
         for (int i = 0; i < index; i++) {
             current = current.next();
         }
-        return current.value();
+        return current.data();
     }
 
     @Override
