@@ -2,8 +2,6 @@ package examenes.parciales.noviembre2024.tablero;
 
 import validaciones.Validaciones;
 
-import java.util.Arrays;
-
 public class TableroDeAjedrez {
     //INTERFACES ----------------------------------------------------------------------------------------------
     //ENUMERADOS ----------------------------------------------------------------------------------------------
@@ -16,6 +14,12 @@ public class TableroDeAjedrez {
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
 
+    /**
+     * post: Inicializa el tablero de ajedrez a partir de la cantidad de
+     * jugadores dada.
+     * pre: La cantidad de jugadores debe ser mayor a cero.
+     * @param cantidadDeJugadores: cantidad de jugadores del torneo.
+     */
     public TableroDeAjedrez(int cantidadDeJugadores) {
         Validaciones.validarNumeroMayorACero(cantidadDeJugadores,
                 "cantidadDeJugadores");
@@ -33,8 +37,11 @@ public class TableroDeAjedrez {
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < this.tablero.length; i++) {
             for (int j = 0; j < this.tablero[0].length; j++) {
-                if (i == j) res.append("X");
-                else res.append("(").append(i).append(", ").append(j).append("): ").append(this.tablero[i][j]);
+                if (i == j) {
+                    res.append("*");
+                } else {
+                    res.append("(").append(i).append(", ").append(j).append("): ").append(this.tablero[i][j]);
+                }
             }
         }
         return res.toString();
@@ -79,24 +86,6 @@ public class TableroDeAjedrez {
         return total;
     }
 
-    private int getPuntajeBlancas(Resultado resultado) {
-        return switch (resultado) {
-            case GANAN_BLANCAS -> 3;
-            case TABLAS -> 1;
-            case ANULADO -> -1;
-            default -> 0;
-        };
-    }
-
-    private int getPuntajeNegras(Resultado resultado) {
-        return switch (resultado) {
-            case GANAN_NEGRAS -> 3;
-            case TABLAS -> 1;
-            case ANULADO -> -1;
-            default -> 0;
-        };
-    }
-
     /**
      * post: Devuelve el número del jugador ganador del torneo, si el torneo
      * está terminado.
@@ -104,7 +93,7 @@ public class TableroDeAjedrez {
      * @throws RuntimeException si el torneo no está terminado.
      */
     public int obtenerJugadorGanador() {
-        this.validarEstadoDelTorneo();
+        this.validarEstadoDelTorneoFinalizado();
         int jugadorGanador = 1;
         int puntajeGanador = this.puntajeJugador(jugadorGanador);
 
@@ -147,7 +136,40 @@ public class TableroDeAjedrez {
         }
     }
 
-    private void validarEstadoDelTorneo() {
+    /**
+     * post: Devuelve el puntaje del jugador con piezas blancas correspondiente,
+     * según el resultado.
+     * @param resultado: el resultado de la partida.
+     * @return el puntaje del jugador con blancas.
+     */
+    private int getPuntajeBlancas(Resultado resultado) {
+        return switch (resultado) {
+            case GANAN_BLANCAS -> 3;
+            case TABLAS -> 1;
+            case ANULADO -> -1;
+            default -> 0;
+        };
+    }
+
+    /**
+     * post: Devuelve el puntaje del jugador con piezas negras correspondiente,
+     * según el resultado.
+     * @param resultado: el resultado de la partida.
+     * @return el puntaje del jugador con negras.
+     */
+    private int getPuntajeNegras(Resultado resultado) {
+        return switch (resultado) {
+            case GANAN_NEGRAS -> 3;
+            case TABLAS -> 1;
+            case ANULADO -> -1;
+            default -> 0;
+        };
+    }
+
+    /**
+     * post: Determina si el torneo está terminado.
+     */
+    private void validarEstadoDelTorneoFinalizado() {
         if (!this.estaFinalizadoElTorneo()) {
             throw new RuntimeException("El torneo no está terminado");
         }
