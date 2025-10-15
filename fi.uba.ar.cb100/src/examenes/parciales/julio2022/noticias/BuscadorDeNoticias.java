@@ -18,6 +18,23 @@ public class BuscadorDeNoticias {
         Validaciones.validarNotNull(noticias, "noticias");
         Validaciones.validarNotNull(conCategorias, "conCategorías");
 
+        /*
+        Set<Categoria> conCategoriasSet = new Conjunto<>(conCategorias);
+        for (Noticia noticia : noticias) {
+            boolean tieneCategoria = false;
+            boolean tieneCategoriaVista = false;
+            for (Categoria cat : noticia.categorias()) {
+                if (conCategoriasSet.contains(cat)) tieneCategoria = true;
+                if (categoriasVistas.contains(cat)) tieneCategoriaVista = true;
+                if (tieneCategoria && tieneCategoriaVista) break;
+            }
+            if (tieneCategoria && !tieneCategoriaVista) {
+                resultado.add(noticia);
+                categoriasVistas.addAll(noticia.categorias());
+            }
+        }
+        */
+
         Set<Noticia> resultado = new Conjunto<>();
         Set<Categoria> categoriasVistas = new Conjunto<>();
         for (Noticia noticia: noticias) {
