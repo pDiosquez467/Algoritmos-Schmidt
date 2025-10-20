@@ -1,22 +1,18 @@
-package examenes.parciales.ajedrez;
+package examenes.parciales.julio2021.smart;
 
-public class TableroDeAjedrez {
+public class AppDeVideos extends App{
     //INTERFACES ----------------------------------------------------------------------------------------------
     //ENUMERADOS ----------------------------------------------------------------------------------------------
     //CONSTANTES ----------------------------------------------------------------------------------------------
     //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
-
-    private JugadorDeAjedrez[] jugadores;
+    private boolean subtitulosActivados;
 
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
-
-    public TableroDeAjedrez(int cantidadDeJugadores) {
-        this.jugadores = new JugadorDeAjedrez[cantidadDeJugadores];
-        for (int i = 0; i < cantidadDeJugadores; i++) {
-            this.jugadores[i] = new JugadorDeAjedrez(i+1, cantidadDeJugadores - 1);
-        }
+    public AppDeVideos(String nombre, int tamanio, boolean funcionaOffline) {
+        super(nombre, tamanio, funcionaOffline);
+        this.subtitulosActivados = false;
     }
 
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
@@ -26,37 +22,20 @@ public class TableroDeAjedrez {
     //MÉTODOS GENERALES ---------------------------------------------------------------------------------------
     //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
-    public void anularPartida(PartidaDeAjedrez partidaDeAjedrez, Juez juez) {
-        // TODO: Validar que la partida sea una del torneo.
-
+    public void activarSubtitulos() {
+        this.validarEstadoAbierto();
+        this.subtitulosActivados = true;
     }
 
-    public boolean estaTerminado() {
-        return false;
-    }
-
-    public int puntajeDeJugador(int numeroDeJugador) {
-        return this.jugadores[numeroDeJugador - 1].puntajeTotal();
-    }
-
-    public JugadorDeAjedrez obtenerGanador() {
-        if (!this.estaTerminado()) {
-            throw new RuntimeException("El torneo no está finalizado");
-        }
-
-        JugadorDeAjedrez ganador = null;
-        for (JugadorDeAjedrez jugadorDeAjedrez: this.jugadores) {
-            if ((ganador == null) ||
-            jugadorDeAjedrez.puntajeTotal() > ganador.puntajeTotal()) {
-                ganador = jugadorDeAjedrez;
-            }
-        }
-        return ganador;
+    public void desactivarSubtitulos() {
+        this.validarEstadoAbierto();
+        this.subtitulosActivados = false;
     }
 
     //MÉTODOS DE CONSULTA DE ESTADO ---------------------------------------------------------------------------
     //GETTERS REDEFINIDOS -------------------------------------------------------------------------------------
     //GETTERS INICIALIZADOS -----------------------------------------------------------------------------------
     //GETTERS COMPLEJOS ---------------------------------------------------------------------------------------
+
     //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 }
