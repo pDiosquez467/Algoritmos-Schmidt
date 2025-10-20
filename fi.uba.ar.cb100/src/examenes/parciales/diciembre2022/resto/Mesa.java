@@ -135,7 +135,7 @@ public class Mesa {
     /**
      * Valida el estado OCUPADO de la mesa.
      */
-    public void validarEstadoOcupada() {
+    private void validarEstadoOcupada() {
         if (this.estaLibre()) {
             throw new RuntimeException("Mesa LIBRE");
         }
@@ -144,7 +144,7 @@ public class Mesa {
     /**
      * Valida el estado LIBRE de la mesa.
      */
-    public void validarEstadoLibre() {
+    private void validarEstadoLibre() {
         if (!this.estaLibre()) {
             throw new RuntimeException("Mesa OCUPADA");
         }

@@ -42,11 +42,11 @@ public class Restaurante {
      * @return la mesa libre solicitada
      * @throws RuntimeException lanza una excepción si no hay mesas libres.
      */
-    public Mesa solicitarMesa() {
+    public int solicitarMesa() {
         for (Mesa mesa : this.mesas) {
             if (mesa.estaLibre()) {
                 mesa.solicitar();
-                return mesa;
+                return mesa.getNumeroDeMesa();
             }
         }
         throw new RuntimeException("No hay mesas libres");
@@ -62,15 +62,15 @@ public class Restaurante {
      * @throws RuntimeException si el estado de la mesa no es válido o si
      *                          el número de mesa no existe.
      */
-    public Mesa cerrarMesa(int numeroDeMesa, double propina) {
+    public int cerrarMesa(int numeroDeMesa, double propina) {
         Validaciones.validarNumeroEntre(numeroDeMesa, 1, this.mesas.length,
                 "numeroDeMesa");
-        Validaciones.validarNumeroMayorACero(propina, "propina");
+        Validaciones.validarNumeroMayorOIgualACero(propina, "propina");
 
         Mesa mesa = this.mesas[numeroDeMesa - 1];
         mesa.cerrar(propina);
         this.actualizarPropinaMaxima(propina);
-        return mesa;
+        return mesa.getNumeroDeMesa();
     }
 
     /**
@@ -104,9 +104,11 @@ public class Restaurante {
      * @return el total de propinas.
      */
     public double totalPropinas() {
-        return Arrays.stream(this.mesas)
-                .mapToDouble(Mesa::totalPropina)
-                .sum();
+        double total = 0.0;
+        for (Mesa mesa: this.mesas) {
+            total += mesa.totalPropina();
+        }
+        return total;
     }
 
     /**
