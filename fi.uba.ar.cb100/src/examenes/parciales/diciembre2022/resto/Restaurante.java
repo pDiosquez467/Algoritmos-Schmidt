@@ -11,8 +11,8 @@ public class Restaurante {
     //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
 
-    private final Mesa[] mesas;
-    private double propinaMaxima;
+    private Mesa[] mesas;
+    private double propinaMaximaRecibida;
 
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
@@ -21,15 +21,12 @@ public class Restaurante {
      * post: Inicializa el restaurante con la cantidad de mesas dada por parámetro.
      * pre: La cantidad de mesas dada debe ser mayor a cero.
      *
-     * @param cantidadMesas: cantidad de mesas en total.
+     * @param cantidadTotalDeMesas: cantidad de mesas en total.
      */
-    public Restaurante(int cantidadMesas) {
-        Validaciones.validarNumeroMayorACero(cantidadMesas, "'cantidadMesas'");
-        this.mesas = new Mesa[cantidadMesas];
-        this.propinaMaxima = 0;
-        for (int i = 0; i < mesas.length; i++) {
-            mesas[i] = new Mesa(i + 1);
-        }
+    public Restaurante(int cantidadTotalDeMesas) {
+        Validaciones.validarNumeroMayorACero(cantidadTotalDeMesas, "'cantidadTotalDeMesas'");
+        this.inicializarMesas(cantidadTotalDeMesas);
+        this.propinaMaximaRecibida = 0;
     }
 
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
@@ -48,7 +45,8 @@ public class Restaurante {
     public Mesa solicitarMesa() {
         for (Mesa mesa : this.mesas) {
             if (mesa.estaLibre()) {
-                return mesa.setEstadoMesa(EstadoMesa.OCUPADA);
+                mesa.solicitar();
+                return mesa;
             }
         }
         throw new RuntimeException("No hay mesas libres");
@@ -58,22 +56,21 @@ public class Restaurante {
      * post: Cierra la mesa cuyo número está dado por parámetro, y le asigna
      * la propina dada.
      *
-     * @param numeroMesa: número de mesa.
+     * @param numeroDeMesa: número de mesa.
      * @param propina:    propina dada por el cliente.
      * @return la mesa cerrada.
      * @throws RuntimeException si el estado de la mesa no es válido o si
      *                          el número de mesa no existe.
      */
-    public Mesa cerrarMesa(int numeroMesa, double propina) {
-        Validaciones.validarNumeroEntre(numeroMesa, 1, this.mesas.length,
-                "'numeroMesa'");
-        Validaciones.validarNumeroMayorACero(propina, "'propina'");
+    public Mesa cerrarMesa(int numeroDeMesa, double propina) {
+        Validaciones.validarNumeroEntre(numeroDeMesa, 1, this.mesas.length,
+                "numeroDeMesa");
+        Validaciones.validarNumeroMayorACero(propina, "propina");
 
-        Mesa mesa = this.mesas[numeroMesa - 1];
-        mesa.validarEstadoOcupada();
-        mesa.recaudarPropina(propina);
-        this.actualizarPropina(propina);
-        return mesa.setEstadoMesa(EstadoMesa.LIBRE);
+        Mesa mesa = this.mesas[numeroDeMesa - 1];
+        mesa.cerrar(propina);
+        this.actualizarPropinaMaxima(propina);
+        return mesa;
     }
 
     /**
@@ -82,7 +79,7 @@ public class Restaurante {
      * @return la máxima propina.
      */
     public double obtenerMayorPropina() {
-        return this.propinaMaxima;
+        return this.propinaMaximaRecibida;
     }
 
     /**
@@ -92,14 +89,13 @@ public class Restaurante {
      */
     public int obtenerMesaConMasPropina() {
         if (this.mesas.length == 0) return 0;
-
         Mesa mesaConMasPropina = this.mesas[0];
         for (int i = 1; i < this.mesas.length; i++) {
             if (this.mesas[i].totalPropina() > mesaConMasPropina.totalPropina()) {
                 mesaConMasPropina = this.mesas[i];
             }
         }
-        return mesaConMasPropina.numero();
+        return mesaConMasPropina.getNumeroDeMesa();
     }
 
     /**
@@ -138,9 +134,16 @@ public class Restaurante {
      * post: Actualiza la propina más alta, si es necesario.
      * @param propina: nueva propina.
      */
-    private void actualizarPropina(double propina) {
-        if (propina > this.propinaMaxima) {
-            this.propinaMaxima = propina;
+    private void actualizarPropinaMaxima(double propina) {
+        if (propina > this.propinaMaximaRecibida) {
+            this.propinaMaximaRecibida = propina;
+        }
+    }
+
+    private void inicializarMesas(int cantidadMesas) {
+        this.mesas = new Mesa[cantidadMesas];
+        for (int i = 0; i < mesas.length; i++) {
+            mesas[i] = new Mesa(i + 1);
         }
     }
 

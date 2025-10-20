@@ -10,22 +10,22 @@ public class Mesa {
     //CONSTANTES ----------------------------------------------------------------------------------------------
     //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
-    private final int numero;
+    private final int numeroDeMesa;
     private EstadoMesa estadoMesa;
-    private double totalPropina;
+    private double totalAcumuladoDePropinas;
 
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
 
     /**
      * post: Inicializa la mesa con el número dado, libre y sin propinas.
-     * @param numero: número de mesa.
+     * @param numeroDeMesa: número de mesa.
      */
-    public Mesa(int numero) {
-        Validaciones.validarNumeroMayorOIgualACero(numero, "'numero'");
-        this.numero       = numero;
+    public Mesa(int numeroDeMesa) {
+        Validaciones.validarNumeroMayorOIgualACero(numeroDeMesa, "numeroDeMesa");
+        this.numeroDeMesa = numeroDeMesa;
         this.estadoMesa   = EstadoMesa.LIBRE;
-        this.totalPropina = 0;
+        this.totalAcumuladoDePropinas = 0;
     }
 
     /**
@@ -34,9 +34,9 @@ public class Mesa {
      * @param mesa: Mesa.
      */
     public Mesa(Mesa mesa) {
-        this.numero       = mesa.numero;
+        this.numeroDeMesa = mesa.numeroDeMesa;
         this.estadoMesa   = mesa.estadoMesa;
-        this.totalPropina = mesa.totalPropina();
+        this.totalAcumuladoDePropinas = mesa.totalPropina();
     }
 
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
@@ -48,12 +48,21 @@ public class Mesa {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Mesa mesa)) return false;
-        return numero == mesa.numero;
+        return numeroDeMesa == mesa.numeroDeMesa;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(numero);
+        return Objects.hashCode(numeroDeMesa);
+    }
+
+    @Override
+    public String toString() {
+        return "Mesa{" +
+                "numeroDeMesa=" + numeroDeMesa +
+                ", estadoMesa=" + estadoMesa +
+                ", totalAcumuladoDePropinas=" + totalAcumuladoDePropinas +
+                '}';
     }
 
     //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
@@ -64,17 +73,25 @@ public class Mesa {
      */
     public void recaudarPropina(double propina) {
         Validaciones.validarNumeroMayorACero(propina, "'propina'");
-        this.totalPropina += propina;
+        this.totalAcumuladoDePropinas += propina;
     }
 
     /**
-     * post: Modifica el estado de la mesa.
-     * @param estadoMesa: nuevo estado de la mesa.
-     * @return la mesa con el estado actualizado.
+     * post: Solicita una mesa LIBRE.
      */
-    public Mesa setEstadoMesa(EstadoMesa estadoMesa) {
-        this.estadoMesa = estadoMesa;
-        return this;
+    public void solicitar() {
+        this.validarEstadoLibre();
+        this.estadoMesa = EstadoMesa.OCUPADA;
+    }
+
+    /**
+     * post: Cierra la mesa, recaudando la propina dada.
+     * @param propina: la propina recaudada.
+     */
+    public void cerrar(double propina) {
+        this.validarEstadoOcupada();
+        this.recaudarPropina(propina);
+        this.estadoMesa = EstadoMesa.LIBRE;
     }
 
     /**
@@ -95,8 +112,8 @@ public class Mesa {
      * post: Devuelve el número de mesa.
      * @return el número de mesa.
      */
-    public int numero() {
-        return numero;
+    public int getNumeroDeMesa() {
+        return numeroDeMesa;
     }
 
     /**
@@ -112,15 +129,24 @@ public class Mesa {
      * @return el total de propinas.
      */
     public double totalPropina() {
-        return totalPropina;
+        return totalAcumuladoDePropinas;
     }
 
     /**
-     * Valida el estado de la mesa.
+     * Valida el estado OCUPADO de la mesa.
      */
     public void validarEstadoOcupada() {
         if (this.estaLibre()) {
             throw new RuntimeException("Mesa LIBRE");
+        }
+    }
+
+    /**
+     * Valida el estado LIBRE de la mesa.
+     */
+    public void validarEstadoLibre() {
+        if (!this.estaLibre()) {
+            throw new RuntimeException("Mesa OCUPADA");
         }
     }
 }
