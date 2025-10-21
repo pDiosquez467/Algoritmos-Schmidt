@@ -1,6 +1,7 @@
 package examenes.parciales.noviembre2021.quimico;
 
 import tdas.conjunto.Conjunto;
+import tdas.lista.teorica.simple.ListaSimplementeEnlazada;
 import validaciones.Validaciones;
 
 import java.util.List;
@@ -79,5 +80,79 @@ public class IngenieroQuimico {
         if (!compuesto.unidadDeMedida().equals(otro.unidadDeMedida())) return false;
         return ((compuesto.cantidad() >= otro.cantidad())) &&
                 ((compuesto.cantidad() <= otro.cantidad() * 2));
+    }
+
+
+    /**
+     * post: Busca en 'solucionesDisponibles' las soluciones que tengan los mismos
+     * compuestos que 'solucionRequerida' con cantidades iguales o superiores,
+     * pero menores o iguales al doble.
+     */
+    public List<Solucion> buscarSolucionesEquivalentesV2(Solucion solucionRequerida,
+                                                       List<Solucion> solucionesDisponibles) {
+        Validaciones.validarNotNull(solucionRequerida, "soluciónRequerida");
+        Validaciones.validarNotNull(solucionesDisponibles, "solucionesDisponibles");
+
+        List<Solucion> solucionesEquivalentes = new ListaSimplementeEnlazada<>();
+
+        for (Solucion candidata : solucionesDisponibles) {
+            if (candidata != null && esEquivalenteARequerida(candidata, solucionRequerida)) {
+                solucionesEquivalentes.add(candidata);
+            }
+        }
+
+        return solucionesEquivalentes;
+    }
+
+    /**
+     * post: Indica si la solución candidata es equivalente a la solución requerida.
+     * Una solución candidata es equivalente si para cada uno de sus compuestos,
+     * existe un compuesto equivalente en la solución requerida.
+     */
+    public boolean esEquivalenteARequerida(Solucion candidata, Solucion requerida) {
+        // Verificar que cada compuesto de la candidata tenga su equivalente en la requerida
+        for (Compuesto compuestoCandidato : candidata.compuestos()) {
+            if (compuestoCandidato == null) {
+                return false; // Compuesto nulo en candidata invalida la equivalencia
+            }
+
+            Compuesto compuestoRequerido = buscarCompuestoEquivalente(requerida, compuestoCandidato);
+            if (compuestoRequerido == null) {
+                return false; // La candidata tiene un compuesto que no existe en la requerida
+            }
+
+            if (!cumpleRangoDeCantidad(compuestoCandidato, compuestoRequerido)) {
+                return false; // La cantidad no está en el rango permitido
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Busca en la solución requerida un compuesto equivalente al compuesto candidato.
+     * Dos compuestos son equivalentes si tienen el mismo nombre y unidad de medida.
+     */
+    public Compuesto buscarCompuestoEquivalente(Solucion requerida, Compuesto compuestoCandidato) {
+        for (Compuesto compuestoRequerido : requerida.compuestos()) {
+            if (compuestoRequerido != null &&
+                    compuestoRequerido.nombre().equals(compuestoCandidato.nombre()) &&
+                    compuestoRequerido.unidadDeMedida() == compuestoCandidato.unidadDeMedida()) {
+                return compuestoRequerido;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Verifica si la cantidad del compuesto candidato cumple con el rango requerido:
+     * cantidad_candidata >= cantidad_requerida && cantidad_candidata <= 2 * cantidad_requerida
+     */
+    public boolean cumpleRangoDeCantidad(Compuesto candidato, Compuesto requerido) {
+        double cantidadRequerida = requerido.cantidad();
+        double cantidadCandidato = candidato.cantidad();
+
+        return cantidadCandidato >= cantidadRequerida &&
+                cantidadCandidato <= 2 * cantidadRequerida;
     }
 }
