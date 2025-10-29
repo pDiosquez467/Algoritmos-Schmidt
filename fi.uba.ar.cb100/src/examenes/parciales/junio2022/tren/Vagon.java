@@ -100,9 +100,17 @@ public class Vagon {
      * post: Vacia el vagón.
      * @throws RuntimeException si el vagón ya está vacío.
      */
-    public void vaciar() {
+    public void descargar() {
         this.validarVagonConCarga();
         this.cargaActual = 0;
+    }
+
+    /**
+     * post: Vacia el tren, dejándolo sin pasajeros.
+     */
+    public void vaciar() {
+        this.validarVagonConAlMenosUnPasajero();
+        this.cantidadDePasajerosActuales = 0;
     }
 
     /**
