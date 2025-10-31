@@ -1,4 +1,4 @@
-package examenes.parciales.abril2022;
+package examenes.parciales.abril2022.intervalo;
 
 import validaciones.Validaciones;
 
