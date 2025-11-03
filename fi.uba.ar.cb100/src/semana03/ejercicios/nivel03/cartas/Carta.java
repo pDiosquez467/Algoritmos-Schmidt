@@ -1,29 +1,81 @@
 package semana03.ejercicios.nivel03.cartas;
 
-import semana03.ejercicios.utils.Validaciones;
+import validaciones.Validaciones;
 
 import java.util.Objects;
 
-public record Carta(Palo palo, int valor) {
-    public enum Palo {
-        BASTO,
-        COPA,
-        ESPADA,
-        ORO
+
+public class Carta {
+    //INTERFACES ----------------------------------------------------------------------------------------------
+    //ENUMERADOS ----------------------------------------------------------------------------------------------
+    //CONSTANTES ----------------------------------------------------------------------------------------------
+    //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+    //ATRIBUTOS -----------------------------------------------------------------------------------------------
+
+    private final Palo palo;
+    private final int numero;
+
+    //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
+    //CONSTRUCTORES -------------------------------------------------------------------------------------------
+
+    /**
+     * post: Inicializa una carta con el palo y el número dados.
+     * pre: El número de la carta debe estar comprendido entre [1, 12].
+     * @param palo: el palo de la carta.
+     * @param numero: el número de la carta.
+     */
+    public Carta(Palo palo, int numero) {
+        Validaciones.validarNotNull(palo, "palo");
+        Validaciones.validarNumeroEntre(numero, 1, 12, "numero");
+        this.palo = palo;
+        this.numero = numero;
     }
 
-    public Carta {
-        Validaciones.validarNumeroEntre(valor, 1, 12, "El valor de la carta debe estar entre 1 y 12");
-    }
+    //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
+    //MÉTODOS HEREDADOS (CLASE)--------------------------------------------------------------------------------
+    //MÉTODOS HEREDADOS (INTERFACE)----------------------------------------------------------------------------
+    //MÉTODOS DE CLASE ----------------------------------------------------------------------------------------
+    //MÉTODOS GENERALES ---------------------------------------------------------------------------------------
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Carta carta)) return false;
-        return valor == carta.valor && palo == carta.palo;
+        return numero == carta.numero && palo == carta.palo;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(palo, valor);
+        return Objects.hash(palo, numero);
+    }
+
+    @Override
+    public String toString() {
+        return "Carta{" +
+                "palo=" + palo +
+                ", numero=" + numero +
+                '}';
+    }
+
+    //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
+    //MÉTODOS DE CONSULTA DE ESTADO ---------------------------------------------------------------------------
+    //GETTERS REDEFINIDOS -------------------------------------------------------------------------------------
+    //GETTERS INICIALIZADOS -----------------------------------------------------------------------------------
+    //GETTERS COMPLEJOS ---------------------------------------------------------------------------------------
+    //GETTERS SIMPLES -----------------------------------------------------------------------------------------
+
+    /**
+     * post: Devuelve el palo de la carta.
+     * @return el palo de la carta.
+     */
+    public Palo palo() {
+        return palo;
+    }
+
+    /**
+     * post: Devuelve el número de la carta.
+     * @return el número de la carta.
+     */
+    public int numero() {
+        return numero;
     }
 }
