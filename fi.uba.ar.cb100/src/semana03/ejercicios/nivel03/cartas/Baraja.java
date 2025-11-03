@@ -3,10 +3,7 @@ package semana03.ejercicios.nivel03.cartas;
 import tdas.lista.teorica.simple.ListaSimplementeEnlazada;
 import validaciones.Validaciones;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Baraja {
     //INTERFACES ----------------------------------------------------------------------------------------------
@@ -15,7 +12,7 @@ public class Baraja {
     //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
 
-    private final List<Carta> cartas;
+    private final Deque<Carta> cartas;
 
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
@@ -24,7 +21,7 @@ public class Baraja {
      * post: Inicializa la baraja de cartas sin cartas asociadas.
      */
     public Baraja() {
-        this.cartas = new ArrayList<>();
+        this.cartas = new ArrayDeque<>();
     }
 
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
@@ -32,6 +29,25 @@ public class Baraja {
     //MÉTODOS HEREDADOS (INTERFACE)----------------------------------------------------------------------------
     //MÉTODOS DE CLASE ----------------------------------------------------------------------------------------
     //MÉTODOS GENERALES ---------------------------------------------------------------------------------------
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Baraja baraja)) return false;
+        return Objects.equals(cartas, baraja.cartas);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(cartas);
+    }
+
+    @Override
+    public String toString() {
+        return "Baraja{" +
+                "cartas=" + cartas +
+                '}';
+    }
+
     //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
     /**
@@ -41,7 +57,7 @@ public class Baraja {
      */
     public boolean agregar(Carta ...cartas) {
         Validaciones.validarNotNull(cartas, "cartas");
-        return this.cartas.addAll(Set.of(cartas));
+        return this.cartas.addAll(List.of(cartas));
     }
 
     /**
@@ -51,14 +67,17 @@ public class Baraja {
      */
     public Carta repartir() {
         Validaciones.validarVerdadero(!this.cartas.isEmpty(), "cartas");
-        return this.cartas.remove(0);
+        return this.cartas.removeFirst();
     }
 
     /**
      * post: Baraja la lista de cartas (genera una permutación de las cartas).
      */
     public void barajar() {
-        Collections.shuffle(this.cartas);
+        List<Carta> barajaBarajada = new ArrayList<>(this.cartas);
+        Collections.shuffle(barajaBarajada);
+        this.cartas.clear();
+        this.cartas.addAll(barajaBarajada);
     }
 
     public boolean contiene(Carta carta) {
@@ -79,7 +98,7 @@ public class Baraja {
      * @return una lista con las cartas que tiene la baraja.
      */
     public List<Carta> ver() {
-        return Collections.unmodifiableList(this.cartas);
+        return new ArrayList<>(this.cartas);
     }
 
     //MÉTODOS DE CONSULTA DE ESTADO ---------------------------------------------------------------------------

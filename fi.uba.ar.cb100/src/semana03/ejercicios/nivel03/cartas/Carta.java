@@ -20,13 +20,13 @@ public class Carta {
 
     /**
      * post: Inicializa una carta con el palo y el número dados.
-     * pre: El número de la carta debe estar comprendido entre [1, 12].
+     * pre: El número de la carta debe estar comprendido entre el rango establecido para esta implementación.
      * @param palo: el palo de la carta.
      * @param numero: el número de la carta.
      */
     public Carta(Palo palo, int numero) {
         Validaciones.validarNotNull(palo, "palo");
-        Validaciones.validarNumeroEntre(numero, 1, 12, "numero");
+        Validaciones.validarNumeroMayorACero(numero, "numero");
         this.palo = palo;
         this.numero = numero;
     }
@@ -50,10 +50,7 @@ public class Carta {
 
     @Override
     public String toString() {
-        return "Carta{" +
-                "palo=" + palo +
-                ", numero=" + numero +
-                '}';
+        return numero + " de " + palo;
     }
 
     //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------

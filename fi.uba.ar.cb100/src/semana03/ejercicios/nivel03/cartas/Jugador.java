@@ -1,81 +1,124 @@
 package semana03.ejercicios.nivel03.cartas;
 
-import semana03.ejercicios.utils.Validaciones;
+import validaciones.Validaciones;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class Jugador {
-    private static final int CAPACIDAD_INICIAL = 5;
+    //INTERFACES ----------------------------------------------------------------------------------------------
+    //ENUMERADOS ----------------------------------------------------------------------------------------------
+    //CONSTANTES ----------------------------------------------------------------------------------------------
+    //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
+    //ATRIBUTOS -----------------------------------------------------------------------------------------------
 
     private final String nombre;
-    private Carta[] mano;
-    private int indiceProximaCarta;
+    private final List<Carta> manoDeCartas;
 
+    //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
+    //CONSTRUCTORES -------------------------------------------------------------------------------------------
+
+    /**
+     * post: Inicializa el jugador con el nombre dado y una mano de cartas vacía.
+     * pre: El nombre del jugador no puede ser nulo ni vacío.
+     * @param nombre: el nombre del jugador.
+     */
     public Jugador(String nombre) {
-        Validaciones.validarNotNull(nombre, "El nombre del jugador debe ser no nulo");
-        Validaciones.validarNotBlank(nombre, "El nombre del jugador debe ser no vacío");
+        Validaciones.validarNotNull(nombre, "nombre");
         this.nombre = nombre;
-        this.mano = new Carta[CAPACIDAD_INICIAL];
-        this.indiceProximaCarta = 0;
+        this.manoDeCartas = new ArrayList<>();
     }
 
-    public void recibirCarta(Carta carta) {
-        Validaciones.validarNotNull(carta, "La carta recibida debe ser no nula");
-        Validaciones.validarVerdadero(this.contieneCarta(carta), "El jugador ya tiene la carta dada");
-        if (this.debeAumentarCapacidad()) {
-            this.ajustarCapacidad(this.mano.length * 2);
+    //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
+    //MÉTODOS HEREDADOS (CLASE)--------------------------------------------------------------------------------
+    //MÉTODOS HEREDADOS (INTERFACE)----------------------------------------------------------------------------
+    //MÉTODOS DE CLASE ----------------------------------------------------------------------------------------
+    //MÉTODOS GENERALES ---------------------------------------------------------------------------------------
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Jugador jugador)) return false;
+        return Objects.equals(nombre, jugador.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nombre);
+    }
+
+    @Override
+    public String toString() {
+        return "Jugador{" +
+                "nombre='" + nombre + '\'' +
+                '}';
+    }
+
+    //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
+
+    /**
+     * post: Agrega una o varias cartas a la mano del jugador.
+     * pre: Las cartas no deben ser nulas.
+     * @param cartas: las cartas a agregar.
+     * @return verdadero si se agregaron exitosamente.
+     */
+    public boolean agregar(Carta ...cartas) {
+        Validaciones.validarNotNull(cartas, "cartas");
+        return this.manoDeCartas.addAll(List.of(cartas));
+    }
+
+    /**
+     * post: Remueve de la mano de cartas la carta dada.
+     * pre: La carta no debe ser nula, y debe pertenecer a
+     * la mano del jugador.
+     * @param carta: la carta a jugar.
+     * @return la carta jugada.
+     */
+    public Carta jugar(Carta carta) {
+        Validaciones.validarNotNull(carta, "carta");
+        boolean ok = this.manoDeCartas.remove(carta);
+        if (!ok) {
+            throw new RuntimeException("La carta no pertenece a la mano del jugador");
         }
-        this.mano[indiceProximaCarta++] = carta;
+        return carta;
     }
 
-    public void jugarUnaCarta(Carta carta) {
-        Validaciones.validarNotNull(carta, "La carta recibida debe ser no nula");
-        Validaciones.validarVerdadero(!this.contieneCarta(carta), "El jugador no tiene la carta dada");
-        int indiceCarta = this.indiceDeLaCarta(carta);
-        this.compactarCartasDesde(indiceCarta);
-        if (this.debeReducirCapacidad()) {
-            this.ajustarCapacidad(this.mano.length / 2);
-        }
+    /**
+     * post: Indica si la carta dada pertenece a la mano del jugador.
+     * @param carta: la carta indicada.
+     * @return verdadero si la carta pertenece a la mano del jugador.
+     */
+    public boolean contiene(Carta carta) {
+        Validaciones.validarNotNull(carta, "carta");
+        return this.manoDeCartas.contains(carta);
     }
 
-    // --- Helpers privados ---
-
-    private boolean contieneCarta(Carta carta) {
-        for (int i = 0; i < indiceProximaCarta; i++) {
-            if (this.mano[i].equals(carta)) {
-                return true;
-            }
-        }
-        return false;
+    /**
+     * post: Calcula la puntuación total de la mano del jugador.
+     * NOTA: La lógica específica de la puntuación (ej. Blackjack, Tute, etc.).
+     * @return la puntuación total de la mano.
+     */
+    public int puntuacionTotal() {
+        return 0;
     }
 
-    private boolean debeAumentarCapacidad() {
-        return indiceProximaCarta >= this.mano.length;
+    //MÉTODOS DE CONSULTA DE ESTADO ---------------------------------------------------------------------------
+    //GETTERS REDEFINIDOS -------------------------------------------------------------------------------------
+    //GETTERS INICIALIZADOS -----------------------------------------------------------------------------------
+    //GETTERS COMPLEJOS ---------------------------------------------------------------------------------------
+    //GETTERS SIMPLES -----------------------------------------------------------------------------------------
+
+    /**
+     * post: Devuelve el nombre del jugador.
+     * @return el nombre del jugador.
+     */
+    public String nombre() {
+        return nombre;
     }
 
-    private boolean debeReducirCapacidad() {
-        return this.mano.length > CAPACIDAD_INICIAL && this.indiceProximaCarta < (this.mano.length / 4);
-    }
-
-    private void ajustarCapacidad(int nuevaCapacidad) {
-        Carta[] nuevas = new Carta[nuevaCapacidad];
-        System.arraycopy(this.mano, 0, nuevas, 0, Math.min(nuevaCapacidad, indiceProximaCarta));
-        this.mano = nuevas;
-    }
-
-    private void compactarCartasDesde(int desde) {
-        for (int i = desde; i < indiceProximaCarta - 1; i++) {
-            this.mano[i] = this.mano[i+1];
-        }
-        this.mano[--indiceProximaCarta] = null;
-    }
-
-    private int indiceDeLaCarta(Carta carta) {
-        for (int i = 0; i < indiceProximaCarta; i++) {
-            if (this.mano[i].equals(carta)) {
-                return i;
-            }
-        }
-        throw new NoSuchElementException("La carta no pertenece a la mano del jugador");
+    /**
+     * post: Devuelve una copia inmutable de la mano de cartas del jugador.
+     * @return la mano de cartas del jugador.
+     */
+    public List<Carta> manoDeCartas() {
+        return Collections.unmodifiableList(this.manoDeCartas);
     }
 }
