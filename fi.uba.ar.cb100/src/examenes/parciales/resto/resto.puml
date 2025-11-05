@@ -1,0 +1,24 @@
+@startuml
+class Resto {
+-mesas: MesaDeResto[]
+-maximaPropinaRegistrada: double
++solicitarMesa(): int
++cerrarMesa(double propina): int
++mesaConMasPropina(): Mesa
++totalPropinas(): double
+}
+
+class MesaDeResto {
+-numero: int
+-propinaAcumulada: double
+-estadoDeLaMesa: EstadoDeMesaDeResto
++ocupar(): void
++liberar(): void
++estaLibre(): boolean
+}
+
+enum EstadoDeMesaDeResto {
+LIBRE,
+OCUPADA,
+}
+@enduml
