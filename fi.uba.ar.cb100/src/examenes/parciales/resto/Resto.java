@@ -18,6 +18,11 @@ public class Resto {
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
 
+    /**
+     * post: Inicializa un resto con la cantidad de mesas indicada.
+     * @param cantidadDeMesas: la cantidad de mesas en el resto.
+     * @throws RuntimeException si la cantidad dada es menor o igual a cero.
+     */
     public Resto(int cantidadDeMesas) {
         Validaciones.validarNumeroMayorACero(cantidadDeMesas, "cantidadDeMesas");
         this.inicializarMesasDeResto(cantidadDeMesas);
@@ -31,13 +36,11 @@ public class Resto {
     //MÉTODOS GENERALES ---------------------------------------------------------------------------------------
     //MÉTODOS DE COMPORTAMIENTO -------------------------------------------------------------------------------
 
-    /*
-    +solicitarMesa(): int
-    +cerrarMesa(double propina): int
-    +mesaConMasPropina(): int
-    +totalPropinas(): double
-    * */
-
+    /**
+     * post: Solicita una mesa LIBRE en el restaurant para ocuparla.
+     * @throws RuntimeException si no hay mesas LIBRES.
+     * @return el número de la mesa disponible.
+     */
     public int solicitarMesa() {
         for (MesaDeResto mesaDeResto : this.mesas) {
             if (mesaDeResto.estaLibre()) {
@@ -48,6 +51,15 @@ public class Resto {
         throw new RuntimeException("No hay mesas disponibles");
     }
 
+    /**
+     * post: Cierra la mesa cuyo número es indicado, otorgándole la propina
+     * indicada.
+     * @throws RuntimeException si el número de mesa es inválido, o la mesa
+     * no está OCUPADA.
+     * @param numeroDeMesa: el número de mesa a cerrar.
+     * @param propina: la propina dada; debe ser mayor a cero.
+     * @return el número de mesa liberada.
+     */
     public int cerrarMesa(int numeroDeMesa, double propina) {
         this.validarNumeroDeMesa(numeroDeMesa);
         Validaciones.validarNumeroMayorACero(propina, "propina");
@@ -56,6 +68,10 @@ public class Resto {
         return mesaDeResto.cerrar(propina);
     }
 
+    /**
+     * post: Devuelve el número de mesa con más propina acumulada.
+     * @return el número de mesa con más propina acumulada.
+     */
     public int mesaConMasPropina() {
         MesaDeResto mesaConMasPropina = null;
         for (MesaDeResto mesaDeResto: this.mesas) {
@@ -64,9 +80,13 @@ public class Resto {
                 mesaConMasPropina = mesaDeResto;
             }
         }
-        return (mesaConMasPropina == null) ? 0 : mesaConMasPropina.numero();
+        return (mesaConMasPropina == null) ? -1 : mesaConMasPropina.numero();
     }
 
+    /**
+     * post: Devuelve el total de propinas acumuladas del resto.
+     * @return el total de propinas acumulado.
+     */
     public double totalPropinas() {
         double total = 0.0;
         for (MesaDeResto mesaDeResto: this.mesas) {
@@ -81,10 +101,23 @@ public class Resto {
     //GETTERS COMPLEJOS ---------------------------------------------------------------------------------------
     //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 
+    /**
+     * post: Devuelve una copia de las mesas del resto.
+     * @return un arreglo de las mesas del resto.
+     */
     public MesaDeResto[] mesas() {
-        return null;
+        MesaDeResto[] copias = new MesaDeResto[this.mesas.length];
+        for (int i = 0; i < this.mesas.length; i++) {
+            MesaDeResto mesaDeResto = this.mesas[i];
+            copias[i] = new MesaDeResto(mesaDeResto);
+        }
+        return copias;
     }
 
+    /**
+     * post: Devuelve la máxima propina registrada en el resto.
+     * @return la máxima propina registrada.
+     */
     public double maximaPropinaRegistrada() {
         return maximaPropinaRegistrada;
     }
@@ -100,7 +133,7 @@ public class Resto {
     }
 
     private void validarNumeroDeMesa(int numeroDeMesa) {
-        if ((numeroDeMesa <= 0) || (numeroDeMesa >= this.mesas.length)) {
+        if ((numeroDeMesa <= 0) || (numeroDeMesa > this.mesas.length)) {
             throw new RuntimeException("Número de mesa INVÁLIDO");
         }
     }

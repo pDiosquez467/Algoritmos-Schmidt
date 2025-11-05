@@ -30,6 +30,17 @@ public class MesaDeResto {
         this.propinaAcumulada    = 0;
     }
 
+    /**
+     * post: Copia el estado de la mesa dada en una nueva mesa.
+     * @param mesaDeResto: la mesa a copiar.
+     */
+    public MesaDeResto(MesaDeResto mesaDeResto) {
+        Validaciones.validarNotNull(mesaDeResto, "mesaDeResto");
+        this.numero = mesaDeResto.numero;
+        this.estadoDeMesaDeResto = mesaDeResto.estadoDeMesaDeResto;
+        this.propinaAcumulada = mesaDeResto.propinaAcumulada;
+    }
+
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
     //MÉTODOS HEREDADOS (CLASE)--------------------------------------------------------------------------------
     //MÉTODOS HEREDADOS (INTERFACE)----------------------------------------------------------------------------
@@ -69,31 +80,11 @@ public class MesaDeResto {
     }
 
     /**
-     * post: Libera la mesa.
-     * pre: La mesa debe estar OCUPADA.
-     * @throws RuntimeException si la mesa está LIBRE.
-     */
-    public void liberar() {
-        this.validarMesaOcupada();
-        this.estadoDeMesaDeResto = EstadoDeMesaDeResto.LIBRE;
-    }
-
-    /**
      * post: Indica si la mesa está LIBRE.
      * @return verdadero si la mesa está libre.
      */
     public boolean estaLibre() {
         return this.estadoDeMesaDeResto.equals(EstadoDeMesaDeResto.LIBRE);
-    }
-
-    /**
-     * post: Recauda la propina dada.
-     * pre: La propina debe ser mayor a cero.
-     * @param propina: la propina dada por el cliente.
-     */
-    public void recaudarPropina(double propina) {
-        Validaciones.validarNumeroMayorACero(propina, "propina");
-        this.propinaAcumulada += propina;
     }
 
     /**
@@ -147,6 +138,26 @@ public class MesaDeResto {
         if (this.estaLibre()) {
             throw new RuntimeException("Mesa LIBRE");
         }
+    }
+
+    /**
+     * post: Recauda la propina dada.
+     * pre: La propina debe ser mayor a cero.
+     * @param propina: la propina dada por el cliente.
+     */
+    private void recaudarPropina(double propina) {
+        Validaciones.validarNumeroMayorACero(propina, "propina");
+        this.propinaAcumulada += propina;
+    }
+
+    /**
+     * post: Libera la mesa.
+     * pre: La mesa debe estar OCUPADA.
+     * @throws RuntimeException si la mesa está LIBRE.
+     */
+    private void liberar() {
+        this.validarMesaOcupada();
+        this.estadoDeMesaDeResto = EstadoDeMesaDeResto.LIBRE;
     }
 
 }

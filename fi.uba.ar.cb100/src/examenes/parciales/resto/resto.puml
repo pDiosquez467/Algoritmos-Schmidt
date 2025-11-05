@@ -13,7 +13,8 @@ class MesaDeResto {
 -propinaAcumulada: double
 -estadoDeLaMesa: EstadoDeMesaDeResto
 +ocupar(): void
-+liberar(): void
++cerrar(propina): int
+-liberar(): void
 +estaLibre(): boolean
 }
 
