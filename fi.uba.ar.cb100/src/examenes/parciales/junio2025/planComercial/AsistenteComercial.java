@@ -1,5 +1,6 @@
 package examenes.parciales.junio2025.planComercial;
 
+import tdas.conjunto.Conjunto;
 import validaciones.Validaciones;
 
 import java.util.Collection;
@@ -20,15 +21,13 @@ public class AsistenteComercial {
                                                   List<String> serviciosRequeridos) {
         Validaciones.validarNotNull(planesDisponibles, "'planesDisponibles'");
         Validaciones.validarNotNull(serviciosRequeridos, "'serviciosRequeridos'");
-
-        Set<PlanComercial> planesFiltrados = new HashSet<>();
+        Set<PlanComercial> planesFiltrados = new Conjunto<>();
         for (PlanComercial planComercial: planesDisponibles) {
             if ((planComercial != null) && (this.tieneElPlanTodosLosServicios(planComercial, serviciosRequeridos) &&
                     !this.existeAlgunServicioAdicional(planComercial, serviciosRequeridos))) {
                 planesFiltrados.add(planComercial);
             }
         }
-
         return this.buscarPlanMasEconomico(planesFiltrados);
     }
 
@@ -40,7 +39,6 @@ public class AsistenteComercial {
      */
     public PlanComercial buscarPlanMasEconomico(Collection<PlanComercial> planesComerciales) {
         Validaciones.validarNotNull(planesComerciales, "'planesComerciales'");
-
         PlanComercial planMasEconomico = null;
         for (PlanComercial planComercial: planesComerciales) {
             if (planComercial == null) continue;
@@ -81,6 +79,8 @@ public class AsistenteComercial {
      * @return verdadero si el plan comercial tiene todos los servicios requeridos.
      */
     public boolean tieneElPlanTodosLosServicios(PlanComercial planComercial, List<String> serviciosRequeridos) {
+        Validaciones.validarNotNull(planComercial, "planComercial");
+        Validaciones.validarNotNull(serviciosRequeridos, "serviciosRequeridos");
         for (String nombreServicio: serviciosRequeridos) {
             Servicio servicio = this.obtenerServicioViaNombre(planComercial.servicios(), nombreServicio);
             if (servicio == null) return false;
@@ -98,7 +98,6 @@ public class AsistenteComercial {
     public Servicio obtenerServicioViaNombre(Collection<Servicio> servicios, String nombreServicio) {
         Validaciones.validarNotNull(servicios, "'servicios'");
         Validaciones.validarNotNull(nombreServicio, "'nombreServicio'");
-
         for (Servicio servicio: servicios) {
             if (servicio.nombre().equals(nombreServicio)) {
                 return servicio;
