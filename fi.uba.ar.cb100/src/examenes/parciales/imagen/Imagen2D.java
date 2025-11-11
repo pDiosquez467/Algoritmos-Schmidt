@@ -96,4 +96,5 @@ public class Imagen2D {
         }
         return maxPixel;
     }
+
 }
