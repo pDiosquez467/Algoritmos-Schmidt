@@ -12,12 +12,15 @@ public class AdministradorDeImagenes {
      */
     public Imagen2D getImagenMasPura(List<Imagen2D> imagenes) {
         Validaciones.validarNotNull(imagenes, "imágenes");
-        Imagen2D imagenMasPuraActual = null;
+        Imagen2D imagenMasPuraActual     = null;
+        int cantidadDePixelesPurosMaxima = -1;
         for (Imagen2D imagen: imagenes) {
             if (imagen == null) continue;
+            int cantidadDePixelesPurosActual = getCantidadDePixelesPuros(imagen);
             if ((imagenMasPuraActual == null) ||
-                    (getCantidadDePixelesPuros(imagen) > getCantidadDePixelesPuros(imagenMasPuraActual))) {
+                    (cantidadDePixelesPurosActual > cantidadDePixelesPurosMaxima)) {
                 imagenMasPuraActual = imagen;
+                cantidadDePixelesPurosMaxima = cantidadDePixelesPurosActual;
             }
         }
         return imagenMasPuraActual;
