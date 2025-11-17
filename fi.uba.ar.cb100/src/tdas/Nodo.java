@@ -1,4 +1,4 @@
-package tdas.lista.teorica;
+package tdas;
 
 import java.util.Objects;
 

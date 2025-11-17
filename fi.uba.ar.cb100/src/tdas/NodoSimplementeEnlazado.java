@@ -1,29 +1,33 @@
-package examenes.parciales.ajedrez;
+package tdas;
 
-public class PartidaDeAjedrez {
+public class NodoSimplementeEnlazado<T> extends Nodo<T> {
     //INTERFACES ----------------------------------------------------------------------------------------------
     //ENUMERADOS ----------------------------------------------------------------------------------------------
     //CONSTANTES ----------------------------------------------------------------------------------------------
     //ATRIBUTOS DE CLASE --------------------------------------------------------------------------------------
     //ATRIBUTOS -----------------------------------------------------------------------------------------------
-
-    private final int numeroDePartida;
-    private JugadorDeAjedrez jugadorBlancas;
-    private JugadorDeAjedrez jugadorNegras;
-    private ResultadoDeLaPartida resultadoDeLaPartida;
-    private boolean estaFinalizada;
-    private boolean estaAnulada;
+    private NodoSimplementeEnlazado<T> siguiente;
 
     //ATRIBUTOS TRANSITORIOS ----------------------------------------------------------------------------------
     //CONSTRUCTORES -------------------------------------------------------------------------------------------
 
-    public PartidaDeAjedrez(int numeroDePartida) {
-        this.numeroDePartida      = numeroDePartida;
-        this.jugadorBlancas       = null;
-        this.jugadorNegras        = null;
-        this.resultadoDeLaPartida = null;
-        this.estaFinalizada       = false;
-        this.estaAnulada          = false;
+    /**
+     * post: Inicializa un nodo simplemente enlazado con el valor dado y la referencia el nodo siguiente.
+     * @param valor: el valor almacenado por el nodo.
+     * @param siguiente: el nodo siguiente.
+     */
+    public NodoSimplementeEnlazado(T valor, NodoSimplementeEnlazado<T> siguiente) {
+        super(valor);
+        this.siguiente = siguiente;
+    }
+
+    /**
+     * post: Inicializa un nodo simplemente enlazado con el valor dado y sin referencia a un siguiente.
+     * @param valor: el valor almacenado por el nodo.
+     */
+    public NodoSimplementeEnlazado(T valor) {
+        super(valor);
+        this.siguiente = null;
     }
 
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
@@ -38,51 +42,21 @@ public class PartidaDeAjedrez {
     //GETTERS COMPLEJOS ---------------------------------------------------------------------------------------
     //GETTERS SIMPLES -----------------------------------------------------------------------------------------
 
-    public int numeroDePartida() {
-        return numeroDePartida;
+    /**
+     * post: Devuelve el siguiente del nodo.
+     * @return el siguiente del nodo.
+     */
+    public NodoSimplementeEnlazado<T> getSiguiente() {
+        return siguiente;
     }
 
-    public JugadorDeAjedrez jugadorBlancas() {
-        return jugadorBlancas;
-    }
+    //SETTERS SIMPLES -----------------------------------------------------------------------------------------
 
-    public JugadorDeAjedrez jugadorNegras() {
-        return jugadorNegras;
-    }
-
-    public ResultadoDeLaPartida resultadoDeLaPartida() {
-        return resultadoDeLaPartida;
-    }
-
-    public boolean estaFinalizada() {
-        return estaFinalizada;
-    }
-
-    public boolean estaAnulada() {
-        return estaAnulada;
-    }
-
-    public PartidaDeAjedrez setResultadoDeLaPartida(ResultadoDeLaPartida resultadoDeLaPartida) {
-        this.resultadoDeLaPartida = resultadoDeLaPartida;
-        return this;
-    }
-
-    public PartidaDeAjedrez setEstaFinalizada(boolean estaFinalizada) {
-        this.estaFinalizada = estaFinalizada;
-        return this;
-    }
-
-    public void setEstaAnulada(boolean estaAnulada) {
-        this.estaAnulada = estaAnulada;
-    }
-
-    public PartidaDeAjedrez setJugadorBlancas(JugadorDeAjedrez jugadorBlancas) {
-        this.jugadorBlancas = jugadorBlancas;
-        return this;
-    }
-
-    public PartidaDeAjedrez setJugadorNegras(JugadorDeAjedrez jugadorNegras) {
-        this.jugadorNegras = jugadorNegras;
-        return this;
+    /**
+     * post: Permite modificar el siguiente nodo.
+     * @param siguiente: el nuevo siguiente.
+     */
+    public void setSiguiente(NodoSimplementeEnlazado<T> siguiente) {
+        this.siguiente = siguiente;
     }
 }
