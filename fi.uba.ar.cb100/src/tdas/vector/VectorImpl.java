@@ -101,7 +101,10 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public void addElement(E obj) {
-
+        if (this.size() >= this.capacity()) {
+            this.ensureCapacity(elementCount + 1);
+        }
+        this.elementData[elementCount++] = obj;
     }
 
     @Override
@@ -111,7 +114,10 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public void clear() {
-
+        for (int i = 0; i < this.elementCount; i++) {
+            this.elementData[i] = null;
+        }
+        this.elementCount = 0;
     }
 
     @Override
@@ -142,22 +148,46 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public E elementAt(int index) {
-        return null;
+        if (index < 0 || index > this.size()) {
+            throw new ArrayIndexOutOfBoundsException("Out of bounds");
+        }
+        return this.elementData[index];
     }
 
     @Override
     public void ensureCapacity(int minCapacity) {
+        int currentCapacity = this.elementData.length;
+        if (currentCapacity < minCapacity) {
+            int newCapacity;
+            if (this.capacityIncrement <= 0) {
+                newCapacity = currentCapacity * 2;
+            } else {
+                newCapacity = currentCapacity + this.capacityIncrement;
+            }
 
+            if (newCapacity < minCapacity) {
+                newCapacity = minCapacity;
+            }
+
+            Object[] newElementData = new Object[newCapacity];
+            System.arraycopy(this.elementData, 0, newElementData, 0, this.elementCount);
+            this.elementData = (E[]) newElementData;
+        }
     }
 
     @Override
     public E firstElement() {
-        return null;
+        if (this.isEmpty()) {
+            throw new NoSuchElementException("The vector has no components");
+        }
+        return this.elementData[0];
     }
 
     @Override
     public void forEach(Consumer<? super E> action) {
-
+        for (int i = 0; i < this.elementCount; i++) {
+            action.accept(this.elementData[i]);
+        }
     }
 
     @Override
@@ -185,7 +215,7 @@ public class VectorImpl<E> implements Vector<E> {
     }
 
     @Override
-    public void insertElementAt(E e, int index) {
+    public void insertElementAt(E obj, int index) {
 
     }
 
@@ -201,7 +231,10 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public E lastElement() {
-        return null;
+        if (this.isEmpty()) {
+            throw new NoSuchElementException("The vector has no components");
+        }
+        return this.elementData[this.size() - 1];
     }
 
     @Override
@@ -270,12 +303,20 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public E set(int index, E element) {
-        return null;
+        if (index < 0 || index > this.size()) {
+            throw new ArrayIndexOutOfBoundsException("Out of bounds");
+        }
+        E oldie = this.elementData[index];
+        this.elementData[index] = element;
+        return oldie;
     }
 
     @Override
-    public void setElementAt(E e, int index) {
-
+    public void setElementAt(E obj, int index) {
+        if (index < 0 || index > this.size()) {
+            throw new ArrayIndexOutOfBoundsException("Out of bounds");
+        }
+        this.elementData[index] = obj;
     }
 
     @Override
@@ -295,6 +336,8 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] arr = new Object[this.elementCount];
+        System.arraycopy(this.elementData, 0, arr, 0, this.elementCount);
+        return arr;
     }
 }
