@@ -1,11 +1,6 @@
 package tdas.vector;
 
-import validaciones.Validaciones;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -111,7 +106,7 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public int capacity() {
-        return 0;
+        return this.elementData.length;
     }
 
     @Override
@@ -126,6 +121,12 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public boolean contains(Object o) {
+        for (int i = 0; i < this.elementCount; i++) {
+            E e = this.elementData[i];
+            if (Objects.equals(e, o)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -165,13 +166,22 @@ public class VectorImpl<E> implements Vector<E> {
     }
 
     @Override
-    public int indexOf(E e) {
-        return 0;
+    public int indexOf(Object o) {
+        return this.indexOf(o, 0);
     }
 
     @Override
-    public int indexOf(E e, int index) {
-        return 0;
+    public int indexOf(Object o, int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("Index cannot be negative");
+        }
+        for (int i = index; i < this.elementCount; i++) {
+            E e = this.elementData[i];
+            if (Objects.equals(e, o)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -181,7 +191,7 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.elementCount == 0;
     }
 
     @Override
@@ -195,13 +205,22 @@ public class VectorImpl<E> implements Vector<E> {
     }
 
     @Override
-    public int lastIndexOf(E e) {
-        return 0;
+    public int lastIndexOf(Object o) {
+        return this.lastIndexOf(0, this.elementCount);
     }
 
     @Override
-    public int lastIndexOf(E e, int index) {
-        return 0;
+    public int lastIndexOf(Object o, int index) {
+        if (index > this.size()) {
+            throw new IndexOutOfBoundsException("Out of bounds");
+        }
+        for (int i = this.elementCount; i > -1; i--) {
+            E e = this.elementData[i];
+            if (Objects.equals(e, o)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -261,7 +280,7 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public int size() {
-        return 0;
+        return this.elementCount;
     }
 
     @Override
