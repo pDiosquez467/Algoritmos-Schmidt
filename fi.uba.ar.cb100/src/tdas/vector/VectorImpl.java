@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+@SuppressWarnings(value = "unchecked")
 public class VectorImpl<E> implements Vector<E> {
     //INTERFACES ----------------------------------------------------------------------------------------------
     //ENUMERADOS ----------------------------------------------------------------------------------------------
@@ -31,7 +32,6 @@ public class VectorImpl<E> implements Vector<E> {
      * @param capacityIncrement: the amount by which the capacity is increased when the
      * vector overflows.
      */
-    @SuppressWarnings(value = "unchecked")
     public VectorImpl(int initialCapacity, int capacityIncrement) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Initial capacity is negative");
@@ -56,6 +56,20 @@ public class VectorImpl<E> implements Vector<E> {
      */
     public VectorImpl() {
         this(10, 0);
+    }
+
+    /**
+     * post: Constructs a vector containing the elements of the specified collection, in the order they are returned
+     * by the collection's iterator.
+     * @param c: the collection whose elements are to be placed into this vector.
+     * @throws NullPointerException if the specified collection is null.
+     */
+    public VectorImpl(Collection<? extends E> c) {
+        this(c.size(), 0);
+        Iterator<?> it = c.iterator();
+        for (int i = 0; i < c.size(); i++) {
+            this.elementData[i] = (E) it.next();
+        }
     }
 
     //MÉTODOS ABSTRACTOS --------------------------------------------------------------------------------------
