@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-@SuppressWarnings(value = "unchecked")
+@SuppressWarnings(value = "all")
 public class VectorImpl<E> implements Vector<E> {
     //INTERFACES ----------------------------------------------------------------------------------------------
     //ENUMERADOS ----------------------------------------------------------------------------------------------
@@ -81,12 +81,19 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public boolean add(E e) {
-        return false;
+        this.addElement(e);
+        return true;
     }
 
     @Override
-    public void add(int index, E element) {
-
+    public void add(int index, E e) {
+        if (index < 0 || index > this.size()) {
+            throw new ArrayIndexOutOfBoundsException("Out of bounds");
+        }
+        this.ensureCapacity(this.elementCount + 1);
+        this.shift(index);
+        this.elementData[index] = e;
+        this.elementCount++;
     }
 
     @Override
@@ -122,7 +129,10 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public Object clone() {
-        return null;
+        VectorImpl<E> clone = new VectorImpl<>(this.elementData.length, this.capacityIncrement);
+        clone.elementCount = this.elementCount;
+        System.arraycopy(this.elementData, 0, clone.elementData, 0, this.elementCount);
+        return clone;
     }
 
     @Override
@@ -138,17 +148,31 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public boolean containsAll(Collection<E> c) {
-        return false;
+        if (c == null) {
+            throw new NullPointerException("collection cannot be null");
+        }
+        for (var e: c) {
+            if (!this.contains(e)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void copyInto(Object[] arr) {
-
+        if (arr == null) {
+            throw new NullPointerException("arr cannot be null");
+        }
+        if (arr.length < this.elementCount) {
+            throw new IndexOutOfBoundsException("Out of bounds");
+        }
+        System.arraycopy(this.elementData, 0, arr, 0, this.elementCount);
     }
 
     @Override
     public E elementAt(int index) {
-        if (index < 0 || index > this.size()) {
+        if (index < 0 || index >= this.size()) {
             throw new ArrayIndexOutOfBoundsException("Out of bounds");
         }
         return this.elementData[index];
@@ -186,13 +210,14 @@ public class VectorImpl<E> implements Vector<E> {
     @Override
     public void forEach(Consumer<? super E> action) {
         for (int i = 0; i < this.elementCount; i++) {
-            action.accept(this.elementData[i]);
+            E e = this.elementData[i];
+            action.accept(e);
         }
     }
 
     @Override
     public E get(int index) {
-        return null;
+        return this.elementAt(index);
     }
 
     @Override
@@ -202,8 +227,8 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public int indexOf(Object o, int index) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("Index cannot be negative");
+        if (index < 0 || index > this.elementCount) {
+            throw new IndexOutOfBoundsException("Out of bounds");
         }
         for (int i = index; i < this.elementCount; i++) {
             E e = this.elementData[i];
@@ -247,7 +272,7 @@ public class VectorImpl<E> implements Vector<E> {
         if (index > this.size()) {
             throw new IndexOutOfBoundsException("Out of bounds");
         }
-        for (int i = this.elementCount; i > -1; i--) {
+        for (int i = this.elementCount - 1; i >= 0; i--) {
             E e = this.elementData[i];
             if (Objects.equals(e, o)) {
                 return i;
@@ -303,7 +328,7 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public E set(int index, E element) {
-        if (index < 0 || index > this.size()) {
+        if (index < 0 || index >= this.size()) {
             throw new ArrayIndexOutOfBoundsException("Out of bounds");
         }
         E oldie = this.elementData[index];
@@ -313,7 +338,7 @@ public class VectorImpl<E> implements Vector<E> {
 
     @Override
     public void setElementAt(E obj, int index) {
-        if (index < 0 || index > this.size()) {
+        if (index < 0 || index >= this.size()) {
             throw new ArrayIndexOutOfBoundsException("Out of bounds");
         }
         this.elementData[index] = obj;
@@ -339,5 +364,11 @@ public class VectorImpl<E> implements Vector<E> {
         Object[] arr = new Object[this.elementCount];
         System.arraycopy(this.elementData, 0, arr, 0, this.elementCount);
         return arr;
+    }
+
+    private void shift(int index) {
+        for (int i = this.elementCount; i > index ; i--) {
+            this.elementData[i] = this.elementData[i-1];
+        }
     }
 }
