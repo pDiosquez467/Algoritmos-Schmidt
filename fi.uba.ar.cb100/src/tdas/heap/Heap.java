@@ -2,26 +2,25 @@ package tdas.heap;
 
 import java.util.Comparator;
 
-@SuppressWarnings("all")
+@SuppressWarnings("unchecked")
 public class Heap<T> implements ColaDePrioridad<T> {
-
     private final static int TAMANIO_INIT = 23;
 
     private T[] datos;
     private int cantidad;
-    private Comparator<T> cmp;
+    private final Comparator<T> cmp;
 
     public Heap(Comparator<T> cmp) {
-        this.datos = (T[]) new Object[TAMANIO_INIT];
+        this.datos    = (T[]) new Object[TAMANIO_INIT];
         this.cantidad = 0;
-        this.cmp = cmp;
+        this.cmp      = cmp;
     }
 
     public Heap(T[] datos, Comparator<T> cmp) {
-        this.datos = datos;
+        this.datos    = datos;
         this.cantidad = datos.length;
-        this.cmp = cmp;
-        this.heapify(datos, cmp);
+        this.cmp      = cmp;
+        this.heapify();
     }
 
     @Override
@@ -31,7 +30,11 @@ public class Heap<T> implements ColaDePrioridad<T> {
 
     @Override
     public void encolar(T elemento) {
-
+        if (this.cantidad == this.datos.length) {
+            this.redimensionar(this.datos.length * 2);
+        }
+        this.datos[this.cantidad++] = elemento;
+        this.upheap(this.cantidad - 1);
     }
 
     @Override
@@ -44,7 +47,18 @@ public class Heap<T> implements ColaDePrioridad<T> {
 
     @Override
     public T desencolar() {
-        return null;
+        if (this.estaVacia()) {
+            throw new RuntimeException("Cola vacía");
+        }
+        T maximo = this.datos[0];
+        swap(0, this.cantidad - 1);
+        this.cantidad--;
+        this.datos[cantidad] = null;
+        downheap(0);
+        if ((this.datos.length > TAMANIO_INIT) && (this.cantidad < this.datos.length / 4)) {
+            this.redimensionar(this.datos.length / 2);
+        }
+        return maximo;
     }
 
     @Override
@@ -52,31 +66,42 @@ public class Heap<T> implements ColaDePrioridad<T> {
         return this.cantidad;
     }
 
-    private void downheap(T[] arr, int pos, Comparator<T> cmp) {
-        if (pos == arr.length - 1) {
+    private void downheap(int posicionPadre) {
+        if (this.obtenerPosicionHijoIzq(posicionPadre) >= this.cantidad) {
             return;
         }
-        int posicionHijoIzq = this.obtenerPosicionHijoIzq(pos);
-        int posicionHijoDer = this.obtenerPosicionHijoDer(pos);
-        int maximo = obtenerPosicionMaximo(arr, cmp, pos, posicionHijoIzq, posicionHijoDer);
-        if (maximo != pos) {
-            swap(arr, pos, maximo);
-            this.downheap(arr, maximo, cmp);
+        int posicionHijoIzq = this.obtenerPosicionHijoIzq(posicionPadre);
+        int posicionHijoDer = this.obtenerPosicionHijoDer(posicionPadre);
+        int maximo = obtenerPosicionMaximo(posicionPadre, posicionHijoIzq, posicionHijoDer);
+        if (maximo != posicionPadre) {
+            swap(posicionPadre, maximo);
+            this.downheap(maximo);
         }
     }
 
-    private int obtenerPosicionMaximo(T[] arr, Comparator<T> cmp, int pos, int posicionHijoIzq, int posicionHijoDer) {
-        return 0;
+    private int obtenerPosicionMaximo(int posicionPadre, int posicionHijoIzq, int posicionHijoDer) {
+        int posicionMax = posicionPadre;
+        if (posicionHijoIzq < this.cantidad) {
+            if (this.cmp.compare(this.datos[posicionPadre], this.datos[posicionHijoIzq]) < 0) {
+                posicionMax = posicionHijoIzq;
+            }
+        }
+        if (posicionHijoDer < this.cantidad) {
+            if (this.cmp.compare(this.datos[posicionMax], this.datos[posicionHijoDer]) < 0) {
+                posicionMax = posicionHijoDer;
+            }
+        }
+        return posicionMax;
     }
 
-    private void upheap(T[] arr, int posicionHijo, Comparator<T> cmp) {
+    private void upheap(int posicionHijo) {
         if (posicionHijo == 0) {
             return;
         }
         int posicionPadre = obtenerPosicionDelPadre(posicionHijo);
-        if (cmp.compare(arr[posicionPadre], arr[posicionHijo]) > 0) {
-            this.swap(arr, posicionPadre, posicionHijo);
-            this.upheap(arr, posicionPadre, cmp);
+        if (this.cmp.compare(this.datos[posicionPadre], this.datos[posicionHijo]) < 0) {
+            swap(posicionPadre, posicionHijo);
+            upheap(posicionPadre);
         }
     }
 
@@ -85,15 +110,17 @@ public class Heap<T> implements ColaDePrioridad<T> {
     }
 
     private int obtenerPosicionHijoIzq(int posicionPadre) {
-        return 2 * posicionPadre + 1;
+        return (2 * posicionPadre) + 1;
     }
 
     private int obtenerPosicionHijoDer(int posicionPadre) {
-        return 2 * posicionPadre + 2;
+        return (2 * posicionPadre) + 2;
     }
 
-    private void heapify(T[] datos, Comparator<T> cmp) {
-
+    private void heapify() {
+        for (int i = this.obtenerPosicionDelPadre(this.cantidad - 1); i >= 0 ; i--) {
+            this.downheap(i);
+        }
     }
 
     private void redimensionar(int nuevoTamanio) {
@@ -102,9 +129,9 @@ public class Heap<T> implements ColaDePrioridad<T> {
         this.datos = nuevos;
     }
 
-    private void swap(T[] arr, int i, int j) {
-        T aux  = arr[i];
-        arr[i] = arr[j];
-        arr[j] = aux;
+    private void swap(int i, int j) {
+        T aux         = this.datos[i];
+        this.datos[i] = this.datos[j];
+        this.datos[j] = aux;
     }
 }
